@@ -876,6 +876,51 @@ h2 {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+.gate {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+}
+.gpic {
+  width: 96px;
+  flex: none;
+}
+.gpic svg {
+  width: 100%;
+  height: auto;
+}
+.gbody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.gbody p {
+  margin: 0;
+  line-height: 1.45;
+}
+.ghint {
+  color: var(--ink2);
+  font-size: 14px;
+}
+.gbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.gbtns .ib {
+  width: auto;
+  padding: 0 16px;
+  flex: none;
+}
+.gmsg:empty {
+  display: none;
+}
 .sp.mine {
   border-color: var(--ink2);
   border-style: dashed;
@@ -2638,6 +2683,98 @@ body.timing .tpad {
   gap: 8px;
   justify-content: space-between;
 }
+.pyalgs {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+.pyalg {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.pyalg .pythumb {
+  width: 96px;
+  flex: none;
+}
+.pyalgbody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.pyalgbody small {
+  color: var(--ink2);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.pyalgbody small svg {
+  width: 14px;
+  height: 14px;
+  color: var(--ok);
+}
+.pymoves {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.pyalgbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.pydrill {
+  width: auto;
+  padding: 0 18px;
+}
+.pypad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.pypad button {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pystats {
+  color: var(--ink2);
+  min-height: 1.4em;
+}
+@media (max-width: 899px) {
+  .pysession .pystage {
+    max-height: 30vh;
+  }
+  .pysession .pystagecard {
+    padding: 8px;
+  }
+  .pysession .pypad button {
+    min-height: 44px;
+  }
+}
+.pypad button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.05;
+}
+.pypad button small {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink2);
+}
 
     </style>
   </head>
@@ -3763,7 +3900,9 @@ function sanitizeStore(raw, schema) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
   const n = schema.stepIds.length,
     okStep = (v) => isInt(v, 0, n - 1);
-  if (["mycube", "progress", "practice", "quiz", "puzzles", "pyr0", "pyr1", "pyr2", "pyr3"].includes(raw.view))
+  if (
+    ["mycube", "progress", "practice", "quiz", "puzzles", "pyr0", "pyr1", "pyr2", "pyr3", "pyrprac"].includes(raw.view)
+  )
     out.view = raw.view;
   else if (okStep(raw.view)) out.view = raw.view;
   else if (okStep(raw.step)) out.view = raw.step;
@@ -3804,7 +3943,7 @@ function sanitizeStore(raw, schema) {
     if (Array.isArray(q.recent)) out.quiz.recent = q.recent.filter((v) => v === 0 || v === 1).slice(-50);
     out.quiz.best = isInt(q.best, 0, 10) ? q.best : null;
     if (obj(q.bestBy))
-      for (const k of ["beginner", "oll", "ollfull", "pll", "pll2side", "f2l"])
+      for (const k of ["beginner", "oll", "ollfull", "pll", "pll2side", "f2l", "two"])
         if (isInt(q.bestBy[k], 0, 10)) out.quiz.bestBy[k] = q.bestBy[k];
   }
   out.time = isInt(raw.time, 0, 1e9) ? raw.time : 0;
@@ -5961,14 +6100,17 @@ const STEPS = [
         done: "All four corners are in their spots. Some may still be twisted.",
       },
     ],
-    tips: ["Twisted is fine. Check the colors, not which way they face."],
+    tips: [
+      "Twisted is fine. Check the colors, not which way they face.",
+      "Before you check, turn the top until the yellow edges match the centers below them, like at the end of step 5.",
+    ],
   },
   {
     id: "corner-twist",
     short: "Corner twist",
     tile: { bg: "#ffd500", fg: "#141414", t: "7" },
     title: "Twist the yellow corners",
-    goal: "Twist each corner until yellow faces up. The bottom looks broken in the middle of this step. Keep going and it comes back.",
+    goal: "Start only when all four corners are in their spots: twisting can’t move a corner to a different spot. Twist each corner until yellow faces up. The bottom looks broken in the middle of this step. Keep going and it comes back. When every corner shows yellow on top, turn the top until the sides line up: that’s the solve. Don’t go back to Corner spots.",
     mask: "all",
     mini: "top",
     view: "top",
@@ -6030,7 +6172,8 @@ const STEPS = [
     ],
     tips: [
       "Never turn the whole cube in this step. Only turn the top (U) to bring the next twisted corner to the front-right.",
-      "Stop as soon as a corner’s yellow is on top, even if the bottom looks scrambled.",
+      "Do R′ D′ R D as a full set of four every time, and stop between sets as soon as a corner’s yellow is on top, even if the bottom looks scrambled.",
+      "Finished, but the corners look out of their spots? Turn the top. It usually just needs one last turn, not step 6 again.",
     ],
   },
 ];
@@ -6504,7 +6647,7 @@ const ALG_SETS = [
   { id: "pll", name: "PLL" },
 ];
 /* Sets you can drill: random cases, solved on the pad, timed. */
-const DRILL_SETS = { f2l: "F2L", oll: "2-look OLL", ollfull: "Full OLL", pll: "PLL" };
+const DRILL_SETS = { f2l: "F2L", oll: "2-look OLL", ollfull: "Full OLL", pll: "PLL", two: "2×2" };
 const PLLTILE = { bg: "#ffd500", fg: "#141414", t: "PLL" };
 const ICON_CLOCK =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>';
@@ -6707,6 +6850,17 @@ const PYR_MOVE_DESC = {
 };
 const pyrMoveText = (m) =>
   "Turn " + PYR_MOVE_DESC[m[0]] + (m.endsWith("'") ? " counterclockwise" : " clockwise") + ", looking at that corner";
+/* The Pyraminx algorithms to practice: every bottom-edge and top-edge case. */
+const PYR_ALGS = [2, 3].flatMap((si) =>
+  PYR_STEPS[si].cases.map((c, ci) => ({
+    id: "pyr-" + (si === 2 ? "b" : "t") + ci,
+    si,
+    ci,
+    name: c.name,
+    moves: c.moves,
+    set: si === 2 ? "bottom" : "top",
+  })),
+);
 
 /* ================= 2D diagrams ================= */
 const paintMask = (mask) => (s) => (mask(s.home) ? COL[s.c] : GRAY);
@@ -7780,7 +7934,7 @@ function openPracticeList() {
   const learned = list.filter((a) => isLearned(store.practice[a.id])).length;
   const two = store.puzzle === "222";
   let h = two
-    ? '<div class="pcard lead"><div><b>2×2 algorithms.</b> Quizzes and drills for the 2×2 are coming soon; the 3×3 has both.</div></div>'
+    ? '<div class="pcard lead"><div><b>Quiz yourself.</b> Name the 2×2 case from its picture: the seven yellow-top cases and the last corners.</div><div class="qbtns2"><button class="ib txt" data-quiz="two">2×2 quiz</button></div></div>'
     : '<div class="pcard lead"><div><b>Quiz yourself.</b> Ten quick questions on recognizing cases, picking algorithms and reading moves. Pick a set:' +
       (Object.keys(store.quiz.bestBy).length
         ? " Your bests: " +
@@ -7827,7 +7981,7 @@ function openPracticeList() {
     " learned. Practice with hints first, then from memory. Three clean runs from memory and it’s learned." +
     (pset === "pll" ? " The six marked “2-look” are all you need to start." : "") +
     "</p>" +
-    (DRILL_SETS[pset] && pset !== "two"
+    (DRILL_SETS[pset]
       ? '<button class="ib main drillBtn" id="drillBtn">Drill random ' + esc(DRILL_SETS[pset]) + " cases</button>"
       : "");
   h += '<div class="algs">';
@@ -8164,7 +8318,12 @@ function quizData(set) {
     );
   else
     STEPS.forEach((st, si) => {
-      const inSetStep = set === "oll" ? st.id === "oll-cross" || st.id === "oll-corners" : !st.track;
+      const inSetStep =
+        set === "two"
+          ? st.id === "two-oll" || st.id === "two-pll"
+          : set === "oll"
+            ? st.id === "oll-cross" || st.id === "oll-corners"
+            : !st.track;
       if (inSetStep) (st.cases || []).forEach((c, ci) => cases.push({ key: si + ":" + ci, name: c.name, alg: c.alg }));
     });
   const algSet = set === "pll2side" ? "pll" : set;
@@ -8176,10 +8335,12 @@ function quizData(set) {
   };
 }
 function openQuiz() {
-  setPuzzle("333");
-  setCubeSize(3);
+  /* the 2×2 quiz shows 2×2 pictures; every other quiz is for the 3×3 */
+  setPuzzle(quizSet === "two" ? "222" : "333");
+  setCubeSize(quizSet === "two" ? 2 : 3);
   const titles = {
     beginner: "Quiz",
+    two: "2×2 quiz",
     oll: "2-look OLL quiz",
     ollfull: "Full OLL quiz",
     pll: "PLL quiz",
@@ -8409,16 +8570,40 @@ const DRILL_GOAL = {
   oll: (f) => layerOK(f, 0) && topYellow(f),
   ollfull: (f) => layerOK(f, 0) && topYellow(f),
   pll: (f) => U_TURNS.some((u) => fIsSolved(fSeq(f, u))),
+  /* 2×2: corners only (a 2×2 has no edges or centers). Last-corner cases need it solved; yellow-top cases need the top
+     yellow with the white layer intact. */
+  two: (f, a) =>
+    a && a.id.startsWith("pll") ? U_TURNS.some((u) => twoSolvedF(fSeq(f, u))) : twoTopYellowF(f) && twoBottomF(f),
 };
+const TWO_FACE = SLOTS.map((s) => s.n.join());
+const twoCorner = (i) => SLOTS[i].p.every((x) => x !== 0);
+function twoSolvedF(f) {
+  const byFace = {};
+  SLOTS.forEach((s, i) => twoCorner(i) && (byFace[TWO_FACE[i]] = byFace[TWO_FACE[i]] || new Set()).add(f[i]));
+  return Object.values(byFace).every((x) => x.size === 1);
+}
+const twoTopYellowF = (f) => SLOTS.every((s, i) => !twoCorner(i) || s.n[1] !== 1 || f[i] === "U");
+function twoBottomF(f) {
+  /* the white layer: all four bottom stickers white, and on each side the two bottom stickers match */
+  const side = {};
+  return SLOTS.every((s, i) => {
+    if (!twoCorner(i) || s.p[1] !== -1) return true;
+    if (s.n[1] === -1) return f[i] === "D";
+    const k = TWO_FACE[i];
+    if (side[k] === undefined) side[k] = f[i];
+    return side[k] === f[i];
+  });
+}
 const DRILL_TASK = {
   f2l: "Put the pair into the front-right slot",
   oll: "Make the whole top yellow",
   ollfull: "Make the whole top yellow",
   pll: "Solve the cube (a final turn of the top is fine)",
+  two: "Finish the case on the 2×2",
 };
 function openDrill(set) {
-  setPuzzle("333");
-  setCubeSize(3);
+  setPuzzle(set === "two" ? "222" : "333");
+  setCubeSize(set === "two" ? 2 : 3);
   cancelAll();
   solveReq++;
   view = "practice";
@@ -8429,7 +8614,8 @@ function openDrill(set) {
   layout("practice");
   setGrip(false);
   camTo(HOLD);
-  const list = ALGS.filter((a) => inSet(a, set));
+  /* the 2×2 drill: its yellow-top and last-corner cases (the first-layer trigger isn't a case) */
+  const list = ALGS.filter((a) => inSet(a, set) && !(set === "two" && a.id === "sexy"));
   buildPad([...new Set(list.flatMap((a) => algMoves(a)))]);
   DR = { set, list, solved: 0, times: [], shown: 0, last: null, queue: [] };
   $("#head").innerHTML =
@@ -8482,7 +8668,7 @@ function drillSolution(st, a) {
   for (const pre of U_TURNS)
     for (const post of U_TURNS) {
       const moves = pre.concat(alg, post);
-      if (DRILL_GOAL[DR.set](fSeq(f, moves))) return moves;
+      if (DRILL_GOAL[DR.set](fSeq(f, moves), a)) return moves;
     }
   throw new Error("No drill solution for " + a.id);
 }
@@ -8523,7 +8709,7 @@ function runDrill() {
       if (DR.hint.moves[DR.hint.i] === m) DR.hint.i++;
       else DR.hint = null;
     }
-    if (DRILL_GOAL[DR.set](stateToFacelets(live))) return finishDrill();
+    if (DRILL_GOAL[DR.set](stateToFacelets(live), DR.a)) return finishDrill();
     if (DR.hint && DR.hint.i < DR.hint.moves.length) {
       setCap(DR.hint.moves[DR.hint.i], "next");
       showArrow(DR.hint.moves[DR.hint.i]);
@@ -9649,14 +9835,11 @@ const storeSchema = () => ({
       .concat(PYR_STEPS)
       .map((s) => [s.id, s.cases.length]),
   ),
-  algIds: ALGS.map((a) => a.id),
+  algIds: ALGS.map((a) => a.id).concat(PYR_ALGS.map((a) => a.id)),
 });
 function loadStore() {
-  const schema = {
-    stepIds: STEPS.map((s) => s.id),
-    caseCounts: Object.fromEntries(STEPS.filter((s) => s.cases).map((s) => [s.id, s.cases.length])),
-    algIds: ALGS.map((a) => a.id),
-  };
+  /* the same schema as everywhere else, so Pyraminx progress survives a reload */
+  const schema = storeSchema();
   for (const k of [STORE_KEY, "cubecoach:v3", "cubecoach:v2"]) {
     try {
       const raw = localStorage.getItem(k);
@@ -9712,15 +9895,14 @@ const topScroll = () => window.scrollTo({ top: 0, behavior: reduced() ? "auto" :
 /* The step bar: Progress, My cube, the method switch, that method's steps, Practice, Timer. (The quiz lives inside Practice.) */
 const navList = () =>
   store.puzzle === "pyr"
-    ? ["puzzles", "pyr0", "pyr1", "pyr2", "pyr3", "timer"]
+    ? ["puzzles", "pyr0", "pyr1", "pyr2", "pyr3", "pyrprac", "timer"]
     : store.puzzle === "222"
       ? ["puzzles", "progress", ...TRACKS.two, "practice", "timer"]
       : ["puzzles", "progress", "mycube", "track", ...TRACKS[store.track], "practice", "timer"];
 function buildNav() {
   const nav = $("#steps");
   nav.innerHTML = "";
-  /* Where am I? covers the cubes; the Pyraminx's four steps are quick to check by eye */
-  $("#whereBtn").hidden = store.puzzle === "pyr";
+
   navList().forEach((v) => {
     const b = document.createElement("button");
     b.className = "sp";
@@ -9775,6 +9957,7 @@ function navLabel(v) {
         (done ? ICON.check.replace("<svg", '<svg class="ck"') + '<span class="sr">, learned</span>' : ""),
     };
   }
+  if (v === "pyrprac") return { cls: "sp", html: tileHTML(PRACTICETILE) + "<span>Practice</span>" };
   if (v === "progress") return { cls: "sp", html: tileHTML(PROGTILE) + "<span>Progress</span>" };
   if (v === "mycube") return { cls: "sp mine", html: tileHTML(MYTILE) + "<span>My cube</span>" };
   if (v === "practice") return { cls: "sp", html: tileHTML(PRACTICETILE) + "<span>Practice</span>" };
@@ -9807,6 +9990,7 @@ function updateNav() {
     cur.scrollIntoView({ block: "nearest", inline: "center", behavior: reduced() ? "auto" : "smooth" });
 }
 const NAMED_VIEWS = {
+  pyrprac: "pyr-practice",
   pyr0: "pyr-tips",
   pyr1: "pyr-centers",
   pyr2: "pyr-bottom",
@@ -9831,7 +10015,7 @@ function viewFromHash() {
 }
 /* Screens inside Practice get their own address too, so the phone's back button steps back through them:
    #practice-<algorithm>, #watch-<algorithm>, #drill-<set>, #quiz-<set>. */
-const QUIZ_SETS = ["beginner", "oll", "ollfull", "pll", "pll2side", "f2l"];
+const QUIZ_SETS = ["beginner", "oll", "ollfull", "pll", "pll2side", "f2l", "two"];
 const SUB_ROUTES = {
   "practice-": (id) => algById(id) && (openAlgPractice(algById(id), "hints"), true),
   "watch-": (id) => algById(id) && (openAlgWatch(algById(id)), true),
@@ -9861,6 +10045,7 @@ function showView(v) {
   if (v === "mycube") openMyCube();
   else if (v === "progress") openProgress();
   else if (v === "puzzles") openPuzzles();
+  else if (v === "pyrprac") openPyrPractice();
   else if (typeof v === "string" && /^pyr\d$/.test(v)) openPyrStep(+v[3]);
   else if (v === "practice") openPracticeList();
   else if (v === "quiz") openQuiz();
@@ -9979,11 +10164,7 @@ function renderTips(tips, tipc, lesson) {
       goView(order[at - 1]);
       topScroll();
     });
-  if ($("#nextBtn"))
-    $("#nextBtn").addEventListener("click", () => {
-      goView(order[at + 1]);
-      topScroll();
-    });
+  if ($("#nextBtn")) $("#nextBtn").addEventListener("click", () => checkBeforeNext(i, order[at + 1]));
 }
 
 /* caption */
@@ -11136,11 +11317,32 @@ const CHECK = [
       return flatSVG(s, paintMask(MASK.all), new Set(HL.placedCorners(s)), "top");
     },
     q: "Is every top corner in its spot?",
-    hint: "Each corner’s three colors match the three centers around it, even if it’s twisted.",
+    hint: "First turn the top until the yellow edges match the centers below them. Then check: each corner’s three colors match the three centers around it, even if it’s twisted.",
     no: 6,
   },
 ];
 /* The speed method's version: cross, first two layers, yellow cross, yellow top, corners, then edges. */
+/* The Pyraminx's version: tips, centers, the yellow face; then the top edges. */
+const CHECK_PYR = [
+  {
+    pic: () => pyrSVG(PSOLVED),
+    q: "Does every tip match the center below it?",
+    hint: "Each tip’s three colors line up with the three stickers just under it.",
+    no: "pyr0",
+  },
+  {
+    pic: () => pyrSVG(PSOLVED),
+    q: "Does every center have yellow facing down, and the top center match the sides?",
+    hint: "Look at the three stickers under each lower tip: yellow points to the bottom on each.",
+    no: "pyr1",
+  },
+  {
+    pic: () => pyrSVG(PSOLVED, { pitch: -0.9 }),
+    q: "Is the whole bottom yellow, with each side’s bottom row matching?",
+    hint: "Tip it up and look underneath. This picture shows it from below.",
+    no: "pyr2",
+  },
+];
 /* The 2×2's version: white layer, then yellow top, then the last corners. */
 const CHECK_TWO = [
   {
@@ -11187,7 +11389,14 @@ let qi = 0,
   lastFocus = null,
   resultStep = 1;
 function openCheck() {
-  CK = store.puzzle === "222" ? CHECK_TWO : store.track === "speed" ? CHECK_SPEED : CHECK;
+  CK =
+    store.puzzle === "pyr"
+      ? CHECK_PYR
+      : store.puzzle === "222"
+        ? CHECK_TWO
+        : store.track === "speed"
+          ? CHECK_SPEED
+          : CHECK;
   lastFocus = document.activeElement;
   qi = 0;
   sheet.hidden = false;
@@ -11241,6 +11450,22 @@ function renderQ() {
 }
 function showResult(n) {
   resultStep = n;
+  if (typeof n === "string") {
+    /* a Pyraminx step */
+    const k = +n[3],
+      st = PYR_STEPS[k];
+    dots(CK.length);
+    $("#qPic").innerHTML = pyrSVG(pyCaseStart(st.cases[0]));
+    $("#qTitle").textContent = "Start with step " + (k + 1) + ": " + st.short.toLowerCase();
+    $("#qHint").textContent = st.goal;
+    $("#rOpen").textContent = "Open step " + (k + 1);
+    $("#qBtns").hidden = true;
+    $("#rBtns").hidden = false;
+    $("#qBack").hidden = false;
+    $("#qPaint").hidden = true;
+    $("#rOpen").focus();
+    return;
+  }
   dots(CK.length);
   const st = STEPS[n];
   $("#qPic").innerHTML = caseThumb(n, 0);
@@ -11263,7 +11488,15 @@ sheet.addEventListener("click", (e) => {
 $("#qYes").addEventListener("click", () => {
   qi++;
   if (qi >= CK.length)
-    showResult(CK === CHECK_TWO ? stepIndex("two-pll") : CK === CHECK_SPEED ? stepIndex("pll-edges") : 7);
+    showResult(
+      CK === CHECK_PYR
+        ? "pyr3"
+        : CK === CHECK_TWO
+          ? stepIndex("two-pll")
+          : CK === CHECK_SPEED
+            ? stepIndex("pll-edges")
+            : 7,
+    );
   else renderQ();
 });
 $("#qNo").addEventListener("click", () => showResult(CK[qi].no));
@@ -11293,6 +11526,68 @@ $("#qPaint").addEventListener("click", () => {
   goView("mycube");
   window.scrollTo({ top: 0 });
 });
+
+/* ================= A quick check before the next step =================
+   Moving on with a step half done is how learners end up going round in circles (say, Corner spots left with one corner
+   out of place: Corner twist can't move it, so it's back to step 6, whose algorithm twists corners again). Before the next
+   step, ask the "Where am I?" question for this step; "Not yet" stays here and says what to do. */
+const NOT_YET = {
+  "corner-spots":
+    "Hold a corner that is in its spot at the front-right and do the algorithm again. If none is, do it once from any side, then look again. Twisting can’t move corners, so step 7 only works once all four are in place.",
+  "corner-twist": "Keep twisting: one full R′ D′ R D at a time, turning only the top between corners.",
+};
+function checkBeforeNext(i, next) {
+  const list = curTrack() === "two" ? CHECK_TWO : curTrack() === "speed" ? CHECK_SPEED : CHECK;
+  const q = list.find((c) => c.no === i);
+  const go = () => {
+    goView(next);
+    topScroll();
+  };
+  if (!q) return go();
+  const nav = $("#tips .nav2");
+  nav.outerHTML =
+    '<div class="gate" role="group" aria-labelledby="gateQ"><div class="gpic">' +
+    q.pic() +
+    "</div>" +
+    '<div class="gbody"><p id="gateQ"><b>Before you move on:</b> ' +
+    esc(q.q) +
+    '</p><p class="ghint">' +
+    esc(q.hint) +
+    "</p>" +
+    '<div class="gbtns"><button class="ib main" id="gateYes">Yes, next step</button><button class="ib txt" id="gateNo">Not yet</button></div>' +
+    '<p class="gmsg" id="gateMsg" aria-live="polite"></p></div></div>';
+  $("#gateYes").focus();
+  $("#gateYes").addEventListener("click", go);
+  $("#gateNo").addEventListener("click", () => {
+    $("#gateMsg").textContent =
+      NOT_YET[STEPS[i].id] ||
+      "Then stay on this step a little longer: pick the case above that looks like your cube and follow it.";
+  });
+}
+
+/* the Pyraminx's check before its next step, in the same style */
+function pyrCheckBeforeNext(n) {
+  const q = CHECK_PYR.find((c) => c.no === "pyr" + n),
+    go = () => goView("pyr" + (n + 1));
+  if (!q) return go();
+  $("#pyrPanel .pystepnav").outerHTML =
+    '<div class="gate" role="group" aria-labelledby="gateQ"><div class="gpic">' +
+    q.pic() +
+    "</div>" +
+    '<div class="gbody"><p id="gateQ"><b>Before you move on:</b> ' +
+    esc(q.q) +
+    '</p><p class="ghint">' +
+    esc(q.hint) +
+    "</p>" +
+    '<div class="gbtns"><button class="ib main" id="gateYes">Yes, next step</button><button class="ib txt" id="gateNo">Not yet</button></div>' +
+    '<p class="gmsg" id="gateMsg" aria-live="polite"></p></div></div>';
+  $("#gateYes").focus();
+  $("#gateYes").addEventListener("click", go);
+  $("#gateNo").addEventListener("click", () => {
+    $("#gateMsg").textContent =
+      "Then stay on this step: pick the case above that looks like your Pyraminx and follow it.";
+  });
+}
 
 /* ================= Your data: account copy, backups, spreadsheet =================
    In claude.ai, progress is also kept privately in the person's account (data/users/<their id>/, which only they can
@@ -11999,6 +12294,8 @@ function pyLoad(plan) {
   pyCtrl();
 }
 function pyAnimate(m, cb) {
+  /* busy from the first instant, so a quick second tap waits instead of starting a second turn */
+  PY.turn = { m, ang: 0 };
   const tk = PY.token,
     dur = reduced() ? 0 : 420 / speed,
     t0 = performance.now(),
@@ -12196,7 +12493,7 @@ function openPyrStep(n) {
     .querySelectorAll(".pycase")
     .forEach((b) => b.addEventListener("click", () => pySelectCase(+b.dataset.ci)));
   if ($("#pyPrevStep")) $("#pyPrevStep").addEventListener("click", () => goView("pyr" + (n - 1)));
-  if ($("#pyNextStep")) $("#pyNextStep").addEventListener("click", () => goView("pyr" + (n + 1)));
+  if ($("#pyNextStep")) $("#pyNextStep").addEventListener("click", () => pyrCheckBeforeNext(n));
   renderTips(st.tips, "#ffd500", false);
   pySelectCase(Math.min(store.cases[st.id] || 0, st.cases.length - 1));
 }
@@ -12235,6 +12532,305 @@ function openPyrPlay(scr, solve) {
     moves,
     done: solve ? "Solved." : "Scrambled. Go back to the timer when you’re ready.",
   });
+}
+
+/* ================= Pyraminx practice and drills =================
+   Practice: one algorithm on a move pad, with hints (an arrow shows the next move) or from memory; three clean runs from
+   memory and it's learned, as for the cubes. Drill: a random bottom-edge or top-edge case, solved any way you like,
+   timed; "Show me" plays its algorithm with arrows. */
+const PS = {
+  kind: null,
+  a: null,
+  p: null,
+  memory: false,
+  t0: null,
+  set: null,
+  last: null,
+  done: false,
+  queue: [],
+  helped: false,
+  solved: 0,
+  times: [],
+  hint: null,
+};
+const PYR_PAD = ["U", "U'", "u", "u'", "L", "L'", "l", "l'", "R", "R'", "r", "r'", "B", "B'", "b", "b'"];
+const PYR_DRILL = { bottom: "bottom-edge", top: "top-edge" };
+/* goals: the bottom set needs centers, the yellow face and the bottom edges; the top set needs it all */
+const PYR_BOTTOM_SLOTS = PSTICKERS.map((s, i) => i).filter(
+  (i) =>
+    PSTICKERS[i].kind === "center" ||
+    PSTICKERS[i].face === 3 ||
+    (PSTICKERS[i].kind === "edge" && PSTICKERS[i].mid[1] < 0),
+);
+const pyrGoal = (set, s) => (set === "top" ? pSolved(s) : PYR_BOTTOM_SLOTS.every((i) => s[i] === PSOLVED[i]));
+function openPyrPractice() {
+  setPuzzle("pyr");
+  PY.token++;
+  enterWideView("pyrprac", PRACTICETILE, "Practice");
+  layout("pyr");
+  const card = (a) => {
+    const rec = store.practice[a.id],
+      learned = isLearned(rec);
+    return (
+      '<div class="pyalg"><span class="pythumb">' +
+      pyrSVG(pyAlgStart(a)) +
+      "</span>" +
+      '<div class="pyalgbody"><b>' +
+      esc(a.name) +
+      '</b><span class="pymoves">' +
+      esc(a.moves.replace(/'/g, "′")) +
+      "</span>" +
+      "<small>" +
+      (learned ? ICON.check + "Learned" : (rec ? rec.memClean : 0) + " of 3 clean runs from memory") +
+      "</small>" +
+      '<div class="pyalgbtns"><button class="pill" data-hint="' +
+      a.id +
+      '">Practice with hints</button><button class="pill" data-mem="' +
+      a.id +
+      '">From memory</button></div></div></div>'
+    );
+  };
+  $("#pyrPanel").innerHTML =
+    '<p class="goal">Practice each algorithm on the move pad: with an arrow showing the next move, then from memory. Three clean runs from memory and it’s learned. Or drill random cases and solve them any way you like.</p>' +
+    '<div class="pyalgbtns"><button class="ib main pydrill" data-drill="bottom">Drill bottom-edge cases</button><button class="ib main pydrill" data-drill="top">Drill top-edge cases</button></div>' +
+    '<h2>Bottom edges</h2><div class="pyalgs">' +
+    PYR_ALGS.filter((a) => a.set === "bottom")
+      .map(card)
+      .join("") +
+    "</div>" +
+    '<h2>Top edges</h2><div class="pyalgs">' +
+    PYR_ALGS.filter((a) => a.set === "top")
+      .map(card)
+      .join("") +
+    "</div>";
+  const byId = (id) => PYR_ALGS.find((a) => a.id === id);
+  $("#pyrPanel")
+    .querySelectorAll("[data-hint]")
+    .forEach((b) => b.addEventListener("click", () => pyrPracticeAlg(byId(b.dataset.hint), false)));
+  $("#pyrPanel")
+    .querySelectorAll("[data-mem]")
+    .forEach((b) => b.addEventListener("click", () => pyrPracticeAlg(byId(b.dataset.mem), true)));
+  $("#pyrPanel")
+    .querySelectorAll("[data-drill]")
+    .forEach((b) => b.addEventListener("click", () => pyrDrill(b.dataset.drill)));
+  renderTips(
+    [
+      "Moves on the pad are the same as in the lessons: capital letters turn a corner block, lowercase just a tip.",
+      "Practice holding it the lesson way: yellow on the bottom, green facing you.",
+    ],
+    "#c41e3a",
+    false,
+  );
+}
+function pyAlgStart(a) {
+  return pSeq(PSOLVED, pInvert(a.moves.split(" ")));
+}
+/* Tip turns carry a small "tip" label (a lowercase l looks like a capital I in many fonts), and every button says
+   its move in words for screen readers. */
+function pyrPadButton(m) {
+  const tip = m[0] === m[0].toLowerCase(),
+    name = PYR_MOVE_DESC[m[0]].replace(/^the /, "") + (m.endsWith("'") ? ", counterclockwise" : ", clockwise");
+  return (
+    '<button data-pm="' +
+    m +
+    '" aria-label="' +
+    name +
+    '">' +
+    esc(m.replace(/'/g, "′")) +
+    (tip ? "<small>tip</small>" : "") +
+    "</button>"
+  );
+}
+function pyrSessionScreen(title, info) {
+  $("#head").innerHTML = '<div class="title">' + tileHTML(PRACTICETILE) + "<h1>" + esc(title) + "</h1></div>";
+  /* the Pyraminx, the move caption and the pad stay together, so a phone shows all three at once */
+  $("#pyrPanel").innerHTML =
+    '<div class="pygrid pysession"><div class="pycol">' +
+    '<div class="pystagecard"><span class="holdchip"><i style="background:#ffd500"></i>' +
+    esc(PYR_HOLD) +
+    '</span><div class="pystage" id="pyrStage" role="img" aria-label="3D Pyraminx"></div></div>' +
+    '<div class="pycap" id="pyrCap" aria-live="polite"></div>' +
+    '<div class="pypad" role="group" aria-label="Moves">' +
+    PYR_PAD.map((m) => pyrPadButton(m)).join("") +
+    "</div>" +
+    '<div class="pystats" id="pyStats"></div><div class="pyalgbtns" id="pyActs"></div></div>' +
+    '<div class="pycol"><div class="algtop"><button class="pill" id="pyToList">' +
+    ICON.back +
+    "All Pyraminx algorithms</button></div>" +
+    '<p class="goal">' +
+    esc(info) +
+    "</p></div></div>";
+  /* a new screen: start at its top at once (a smooth scroll would only show the old position sliding away) */
+  window.scrollTo(0, 0);
+  $("#pyToList").addEventListener("click", () => goView("pyrprac"));
+  $("#pyrPanel")
+    .querySelectorAll("[data-pm]")
+    .forEach((b) => b.addEventListener("click", () => pyrTap(b.dataset.pm)));
+}
+const pyrCap = (big, line, small) =>
+  ($("#pyrCap").innerHTML =
+    '<div class="pymove' +
+    (big === "✓" ? " done" : "") +
+    '">' +
+    esc(big) +
+    "</div><div><b>" +
+    esc(line) +
+    "</b><small>" +
+    esc(small || "") +
+    "</small></div>");
+function pyrShowArrow(moves, i) {
+  PY.moves = moves || [];
+  PY.idx = i || 0;
+  pyDraw();
+}
+/* ---------- one algorithm ---------- */
+function pyrPracticeAlg(a, memory) {
+  PY.token++;
+  Object.assign(PS, { kind: "alg", a, memory, p: newPractice(a.moves.split(" ")), t0: null, queue: [], done: false });
+  PY.state = pyAlgStart(a);
+  PY.turn = null;
+  pyrSessionScreen(
+    a.name,
+    (memory ? "From memory: no arrows. " : "With hints: the arrow shows each move. ") +
+      a.moves.split(" ").length +
+      " moves.",
+  );
+  pyrShowArrow(memory ? [] : PS.p.moves, 0);
+  pyrCap("?", memory ? "Do the algorithm from memory" : "Follow the arrow", a.name);
+  pyrActs();
+}
+function pyrActs() {
+  const acts = $("#pyActs");
+  if (PS.kind === "alg")
+    acts.innerHTML =
+      '<button class="pill" id="pyAgain">' +
+      ICON.restart +
+      "Start again</button>" +
+      (PS.memory
+        ? '<button class="pill" id="pySwap">Switch to hints</button>'
+        : '<button class="pill" id="pySwap">Try from memory</button>');
+  else
+    acts.innerHTML =
+      '<button class="' +
+      (PS.done ? "ib main" : "pill") +
+      '" id="pyAgain">' +
+      (PS.done ? "Next case" : "Skip this case") +
+      "</button>" +
+      (PS.done ? "" : '<button class="pill" id="pyShow">Show me</button>');
+  $("#pyAgain").addEventListener("click", () =>
+    PS.kind === "alg" ? pyrPracticeAlg(PS.a, PS.memory) : pyrDrill(PS.set),
+  );
+  if ($("#pySwap")) $("#pySwap").addEventListener("click", () => pyrPracticeAlg(PS.a, !PS.memory));
+  if ($("#pyShow")) $("#pyShow").addEventListener("click", pyrDrillShow);
+  const s = $("#pyStats");
+  if (PS.kind === "alg") {
+    const rec = store.practice[PS.a.id];
+    s.textContent = isLearned(rec)
+      ? "Learned. " + (rec.best ? "Best from memory: " + (rec.best / 1000).toFixed(1) + " s." : "")
+      : (rec ? rec.memClean : 0) + " of 3 clean runs from memory.";
+  } else {
+    const avg = PS.times.length ? PS.times.reduce((x, y) => x + y, 0) / PS.times.length : null;
+    s.textContent = PS.solved + " solved" + (avg !== null ? ", average " + (avg / 1000).toFixed(1) + " s" : "");
+  }
+}
+function pyrTap(m) {
+  if (PS.done) return;
+  PS.queue.push(m);
+  pyrRun();
+}
+function pyrRun() {
+  if (PY.turn || !PS.queue.length || PS.done) return;
+  const m = PS.queue.shift();
+  if (PS.t0 === null) PS.t0 = performance.now();
+  activity();
+  if (PS.kind === "alg") {
+    const r = practiceTap(PS.p, m);
+    if (r.result === "wrong") {
+      PS.queue.length = 0;
+      pyrCap(
+        "✗",
+        PS.memory ? "Not quite. Try again." : "Not that one. Follow the arrow.",
+        "Mistakes so far: " + PS.p.mistakes,
+      );
+      return;
+    }
+    pyAnimate(m, () => {
+      pyrShowArrow(PS.memory ? [] : PS.p.moves, PS.p.i);
+      if (PS.p.done) return pyrAlgDone();
+      pyrCap(String(PS.p.i), "Move " + PS.p.i + " of " + PS.p.moves.length + " done", "");
+      pyrRun();
+    });
+    return;
+  }
+  pyAnimate(m, () => {
+    if (PS.hint) PS.hint.i = PS.hint.moves[PS.hint.i] === m ? PS.hint.i + 1 : -1;
+    pyrShowArrow(PS.hint && PS.hint.i >= 0 ? PS.hint.moves : [], PS.hint ? PS.hint.i : 0);
+    if (pyrGoal(PS.set, PY.state)) return pyrDrillDone();
+    pyrRun();
+  });
+}
+function pyrAlgDone() {
+  PS.done = true;
+  const ms = performance.now() - PS.t0,
+    clean = PS.p.mistakes === 0;
+  store.practice[PS.a.id] = recordRun(store.practice[PS.a.id], { clean, memory: PS.memory, ms });
+  save();
+  pyrCap(
+    "✓",
+    clean
+      ? "Clean run in " + (ms / 1000).toFixed(1) + " s."
+      : "Done, with " + PS.p.mistakes + " mistake" + (PS.p.mistakes > 1 ? "s" : "") + ".",
+    PS.memory ? "" : "Try it from memory next.",
+  );
+  pyrActs();
+}
+/* ---------- drill ---------- */
+function pyrDrill(set) {
+  PY.token++;
+  const list = PYR_ALGS.filter((a) => a.set === set);
+  let a;
+  do a = list[Math.floor(Math.random() * list.length)];
+  while (list.length > 1 && a === PS.last && PS.kind === "drill");
+  if (PS.kind !== "drill" || PS.set !== set) Object.assign(PS, { solved: 0, times: [] });
+  Object.assign(PS, { kind: "drill", set, a, last: a, t0: null, queue: [], done: false, helped: false, hint: null });
+  PY.state = pyAlgStart(a);
+  PY.turn = null;
+  pyrSessionScreen(
+    "Drill: " + PYR_DRILL[set] + " cases",
+    "A random case. Solve it on the pad, any way you like; the clock starts on your first move.",
+  );
+  pyrShowArrow([], 0);
+  pyrCap(
+    "?",
+    set === "top" ? "Solve the Pyraminx" : "Put the front-bottom edge in",
+    "Recognize the case first, then move.",
+  );
+  pyrActs();
+}
+function pyrDrillShow() {
+  PY.token++;
+  PY.state = pyAlgStart(PS.a);
+  PY.turn = null;
+  Object.assign(PS, { helped: true, t0: null, queue: [], hint: { moves: PS.a.moves.split(" "), i: 0 } });
+  pyrShowArrow(PS.hint.moves, 0);
+  pyrCap("→", "Follow the arrows", PS.a.name + ": " + PS.a.moves.replace(/'/g, "′"));
+}
+function pyrDrillDone() {
+  PS.done = true;
+  PS.queue.length = 0;
+  const ms = performance.now() - PS.t0;
+  if (!PS.helped) {
+    PS.solved++;
+    PS.times.push(ms);
+  }
+  pyrShowArrow([], 0);
+  pyrCap(
+    "✓",
+    (PS.helped ? "Solved with help: " : "Solved in " + (ms / 1000).toFixed(1) + " s: ") + PS.a.name + ".",
+    "Its algorithm: " + PS.a.moves.replace(/'/g, "′"),
+  );
+  pyrActs();
+  $("#pyAgain").focus();
 }
 
 /* ================= Settings: letters and color layout ================= */

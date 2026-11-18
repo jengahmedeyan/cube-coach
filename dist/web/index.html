@@ -157,6 +157,51 @@ header {
   color: var(--bg);
   border-color: var(--ink);
 }
+.headRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  flex: none;
+}
+.theme-switch button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.theme-switch button svg {
+  width: 16px;
+  height: 16px;
+}
+.theme-switch button[aria-pressed="true"] {
+  background: var(--panel);
+  color: var(--ink);
+}
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px) {
+  #whereBtn {
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+    gap: 0;
+  }
+  #whereBtn .wtxt {
+    display: none;
+  }
+}
 .steps {
   display: flex;
   gap: 8px;
@@ -321,8 +366,9 @@ h2 {
   margin-top: 2px;
 }
 .case[aria-pressed="true"] {
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 2px var(--accent);
+  border-color: var(--ink);
+  border-width: 2px;
+  padding: 7px 9px 11px;
 }
 
 /* Never wider than the screen. iOS zooms the whole page out when anything sticks out sideways (3D-positioned cube
@@ -1022,8 +1068,8 @@ body {
   height: 16px;
 }
 .rw.cur {
-  border-color: var(--accent);
-  box-shadow: inset 3px 0 0 var(--accent);
+  border-color: var(--ink);
+  border-width: 1.5px;
 }
 .rw.cur .num {
   background: var(--accent);
@@ -2353,7 +2399,7 @@ body.timing .tpad {
   gap: 4px;
 }
 .scr.long {
-  max-height: 32vh;
+  max-height: 28vh;
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -2958,6 +3004,166 @@ body.timing .tpad {
   font-weight: 500;
   color: var(--ink2);
 }
+/* ================= 4×4 view ================= */
+.f4stagewrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.f4stage {
+  width: 100%;
+  max-width: 360px;
+  height: 260px;
+  perspective: 900px;
+  display: grid;
+  place-items: center;
+  touch-action: pan-y;
+  border-radius: 16px;
+  background: var(--soft);
+}
+.f4stage:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.f4scene {
+  position: relative;
+  transform-style: preserve-3d;
+  width: 1px;
+  height: 1px;
+}
+.f4s,
+.f4body {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+}
+.f4s {
+  border: 1.5px solid rgba(0, 0, 0, 0.35);
+}
+.f4body {
+  background: #141414;
+  border-radius: 10px;
+}
+.f4stagebtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.f4sec {
+  margin-bottom: 26px;
+}
+.f4sec h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.f4sec p {
+  color: var(--ink2);
+  margin: 0 0 12px;
+  max-width: 68ch;
+}
+.f4list {
+  color: var(--ink2);
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+.f4list li {
+  margin-bottom: 8px;
+  max-width: 64ch;
+}
+.f4list li b {
+  color: var(--ink);
+}
+.f4pad {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.f4row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.f4rowlbl {
+  font-size: 13px;
+  color: var(--ink2);
+}
+.f4btns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+@media (min-width: 480px) {
+  .f4btns {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+.f4btns button {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--ink);
+}
+.f4btns button:active {
+  background: var(--soft);
+}
+.f4alg {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  background: var(--soft);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.f4algname {
+  font-weight: 600;
+  font-size: 14px;
+}
+.f4algmoves {
+  font-family: ui-monospace, monospace;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+.f4pracbox {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.f4pracrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.f4pracrow span:last-child {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--ink2);
+}
+.f4pracstatus {
+  color: var(--ink2);
+  margin: 0 0 12px;
+}
+.f4pracbox .f4btns {
+  margin-top: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (min-width: 560px) {
+  .f4stage {
+    max-width: 420px;
+    height: 320px;
+  }
+}
 
     </style>
   </head>
@@ -2972,21 +3178,42 @@ body.timing .tpad {
           </div>
           <div class="brand">Cube coach</div>
         </div>
-        <button class="pill" id="whereBtn">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="9" />
-            <path d="M9.5 9.5a2.6 2.6 0 1 1 3.4 2.5c-.6.2-.9.7-.9 1.3v.7" />
-            <path d="M12 17h.01" /></svg
-          >Where am I?
-        </button>
+        <div class="headRight">
+          <button class="pill" id="whereBtn" aria-label="Where am I?">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M9.5 9.5a2.6 2.6 0 1 1 3.4 2.5c-.6.2-.9.7-.9 1.3v.7" />
+              <path d="M12 17h.01" /></svg
+            ><span class="wtxt">Where am I?</span>
+          </button>
+          <div class="theme-switch" role="group" aria-label="Theme">
+            <button class="themeOpt" data-t="light" aria-label="Light theme" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4.2" />
+                <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.55 1.55M18.25 18.25l1.55 1.55M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.55-1.55M18.25 5.75l1.55-1.55" />
+              </svg>
+            </button>
+            <button class="themeOpt" data-t="system" aria-label="Match system theme" aria-pressed="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4.5" width="18" height="12" rx="2" />
+                <path d="M8 20h8M12 16.5V20" />
+              </svg>
+            </button>
+            <button class="themeOpt" data-t="dark" aria-label="Dark theme" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.3 14.9a8.3 8.3 0 0 1-10.2-10.2 8.3 8.3 0 1 0 10.2 10.2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </header>
       <nav class="steps" id="steps" aria-label="Steps"></nav>
       <main>
@@ -3108,6 +3335,7 @@ body.timing .tpad {
           <div id="progressPanel" hidden></div>
           <div id="puzzlesPanel" hidden></div>
           <div id="pyrPanel" hidden></div>
+          <div id="fourPanel" hidden></div>
           <div id="algsPanel" hidden></div>
           <div id="quizPanel" hidden></div>
           <div id="algDetail" hidden></div>
@@ -4153,7 +4381,7 @@ function sanitizeStore(raw, schema) {
       .slice(-1000);
   if (["beginner", "cfop"].includes(raw.solveWith)) out.solveWith = raw.solveWith;
   out.onboarded = raw.onboarded === true;
-  out.puzzle = ["222", "pyr"].includes(raw.puzzle) ? raw.puzzle : "333";
+  out.puzzle = ["222", "pyr", "four"].includes(raw.puzzle) ? raw.puzzle : "333";
   out.savedAt = isInt(raw.savedAt, 0, 1e14) ? raw.savedAt : 0;
   out.sync = raw.sync !== false;
   if (["2look", "full"].includes(raw.lastLayer)) out.lastLayer = raw.lastLayer;
@@ -4205,9 +4433,10 @@ function practiceTap(p, tap) {
   };
   if (exp.endsWith("2")) {
     if (tap === exp) return advance();
+    const base = exp.slice(0, -1);
     if (p.half) {
       if (tap === p.half) return advance();
-    } else if (tap === exp[0] || tap === exp[0] + "'") {
+    } else if (tap === base || tap === base + "'") {
       p.half = tap;
       return { result: "half", expected: exp };
     }
@@ -4842,6 +5071,113 @@ function randomState2(rng = Math.random) {
   }
 }
 const stateFromMoves2 = (moves) => moves.reduce((s, m) => applyMove2(s, m), solved2());
+
+/* ================= 4×4 cube: sticker model, moves, and reduction-stage checks =================
+   Same sticker idea as the 3×3 engine (engine.js), just with four layers along each axis instead of three. A 4×4 has
+   no fixed center, so layer coordinates are the half-integers -1.5, -0.5, 0.5, 1.5. A sticker sits on a cubie wherever
+   one of its coordinates is at the extreme (±1.5): one extreme → a center piece (24 of them, 4 per face), two extremes
+   → an edge wing (48 of them, 2 per edge location), three extremes → a corner (24 stickers, same 8 corners as any
+   cube). Moves: R/L/U/D/F/B turn the outer layer only; Rw/Lw/Uw/Dw/Fw/Bw ("wide") turn that layer plus the one next to
+   it, which is how every face move on a 4×4 is named in competition. x/y/z turn the whole cube. */
+
+const LAYERS4 = [-1.5, -0.5, 0.5, 1.5];
+const BASE4 = { R: [0, -1], L: [0, 1], U: [1, -1], D: [1, 1], F: [2, -1], B: [2, 1] };
+const WHOLE4 = { x: 0, y: 1, z: 2 };
+/* R/L/U/D/F/B: outer layer only. Rw etc: outer + the layer next to it, together ("wide", how every normal 4×4 turn
+   is made). 2R etc: just the layer next to a face, turned alone (used by the parity-fix algorithms). */
+const MOVE4_RE = /^(?:2[RLUDFB]|[RLUDFB]w?|[xyz])['2]?$/;
+const isMove4 = (m) => typeof m === "string" && MOVE4_RE.test(m);
+
+function parseMove4(m) {
+  if (!isMove4(m)) throw new Error("Unknown 4×4 move: " + JSON.stringify(m));
+  const slice = m[0] === "2",
+    wide = !slice && m[1] === "w",
+    base = slice ? m.slice(0, 2) : wide ? m.slice(0, 2) : m[0],
+    suf = m.slice(base.length);
+  const t = suf === "2" ? 2 : 1,
+    sign = suf === "'" ? -1 : 1;
+  if (WHOLE4[base] !== undefined) return { ax: WHOLE4[base], layers: LAYERS4.slice(), d: -sign, t };
+  const letter = slice ? base[1] : base[0],
+    [ax, bd] = BASE4[letter],
+    outer = bd < 0 ? 1.5 : -1.5,
+    inner = bd < 0 ? 0.5 : -0.5;
+  return { ax, layers: slice ? [inner] : wide ? [outer, inner] : [outer], d: bd * sign, t };
+}
+function moveInstant4(st, m) {
+  const o = parseMove4(m);
+  for (const s of st) if (o.layers.includes(s.p[o.ax])) turnSticker(s, o);
+}
+const invMove4 = (m) => (m.endsWith("2") ? m : m.endsWith("'") ? m.slice(0, -1) : m + "'");
+
+/* Each sticker keeps its piece type (how many of its home coordinates are at the extreme), which never changes as the
+   cube turns, so lessons can ask "are every center's stickers one color" without caring where that cubie started. */
+function kindOf(p) {
+  const n = p.filter((v) => Math.abs(v) === 1.5).length;
+  return n === 3 ? "corner" : n === 2 ? "edge" : "center";
+}
+function newCube4() {
+  const st = [];
+  let id = 0;
+  for (const x of LAYERS4)
+    for (const y of LAYERS4)
+      for (const z of LAYERS4) {
+        const p = [x, y, z],
+          kind = kindOf(p),
+          faces = [];
+        if (Math.abs(x) === 1.5) faces.push([Math.sign(x), 0, 0]);
+        if (Math.abs(y) === 1.5) faces.push([0, Math.sign(y), 0]);
+        if (Math.abs(z) === 1.5) faces.push([0, 0, Math.sign(z)]);
+        for (const n of faces)
+          st.push({ id: id++, p: p.slice(), n: n.slice(), c: faceOf(n), home: n.slice(), kind });
+      }
+  return st;
+}
+const cloneState4 = (st) =>
+  st.map((s) => ({ id: s.id, p: s.p.slice(), n: s.n.slice(), c: s.c, home: s.home.slice(), kind: s.kind }));
+const isSolved4 = (st) => st.every((s) => s.c === faceOf(s.n));
+
+/* ---------- reduction-stage checks ---------- */
+/* Centers done: every center sticker now on a given face shows the same color as the others on that face (and, since
+   demos always build toward the real color scheme, that color is the face's own letter). */
+function centersDone4(st) {
+  return st.filter((s) => s.kind === "center").every((s) => s.c === faceOf(s.n));
+}
+/* A 4×4 edge location is two wings that must show the same two colors to behave like one 3×3 edge. Each wing's partner
+   is the other center-type-adjacent sticker sharing its edge location: same two "home-style" face directions, found by
+   matching current position's non-edge-axis coordinate pairs. We pair by current slot, not by piece identity, so this
+   checks what the cube currently looks like, not how it got there. */
+function edgeSlots4(st) {
+  const edges = st.filter((s) => s.kind === "edge");
+  const bySlot = new Map();
+  for (const s of edges) {
+    /* an edge location has two wing pieces (differing only in the one non-extreme coordinate) and each shows two
+       faces; the two stickers that must match colors are the ones on the SAME face from the two different wings, so
+       the key is the edge location's two extreme signs plus which of those two faces this sticker is on. */
+    const extAxes = [0, 1, 2].filter((a) => Math.abs(s.p[a]) === 1.5);
+    const nAxis = [0, 1, 2].find((a) => s.n[a] !== 0);
+    const key = extAxes.map((a) => (s.p[a] > 0 ? "+" : "-")).join("") + "|" + extAxes.join("") + "|" + nAxis;
+    if (!bySlot.has(key)) bySlot.set(key, []);
+    bySlot.get(key).push(s);
+  }
+  return [...bySlot.values()];
+}
+function edgesDone4(st) {
+  return edgeSlots4(st).every((pair) => pair.length === 2 && pair[0].c === pair[1].c);
+}
+/* Parity: after centers and edges are done and the cube is finished exactly like a 3×3, a 4×4 can land in one of two
+   positions a 3×3 can never reach. OLL parity: a single outer edge is flipped in place. PLL parity: two opposite outer
+   edges are swapped. Both only make sense once the reduction is complete, so callers check centersDone4/edgesDone4 (or
+   that the rest of the cube looks solved) first. */
+function hasOLLParity4(st) {
+  if (!centersDone4(st) || !edgesDone4(st)) return false;
+  const bad = edgeSlots4(st).filter((pair) => pair[0].c !== faceOf(pair[0].n) || pair[1].c !== faceOf(pair[1].n));
+  return bad.length === 1;
+}
+function hasPLLParity4(st) {
+  if (!centersDone4(st) || !edgesDone4(st)) return false;
+  const corners = st.filter((s) => s.kind === "corner" && s.c !== faceOf(s.n));
+  return corners.length > 0 && edgeSlots4(st).every((pair) => pair[0].c === faceOf(pair[0].n));
+}
 
 /* ================= Pyraminx: geometry, moves, shortest solutions, scrambles =================
    Every sticker is a 3D triangle on a regular tetrahedron (top corner U; L, R at the front; B at the back; front face
@@ -5830,6 +6166,30 @@ const PUZZLE_ART = {
     '<svg viewBox="0 0 220 220" width="100%" height="100%" aria-hidden="true" focusable="false"><polygon points="94.6,8.0 202.0,44.7 125.4,96.2 18.0,59.5" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="18.0,59.5 125.4,96.2 125.4,212.0 18.0,175.3" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="125.4,96.2 202.0,44.7 202.0,160.5 125.4,212.0" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="145.6,28.2 159.9,69.2 74.4,76.0 60.1,35.0" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="95.4,10.1 141.5,25.9 62.4,32.2" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="197.7,45.1 151.5,29.3 164.8,67.2" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="124.6,94.2 78.5,78.4 157.6,72.0" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="22.3,59.1 68.5,74.9 55.2,37.0" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="71.7,81.9 121.6,152.8 71.7,189.6 21.7,118.6" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="20.5,63.0 66.7,78.8 20.5,112.8" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="122.9,98.1 76.7,82.3 122.9,147.9" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="122.9,208.4 76.7,192.6 122.9,158.7" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="20.5,173.4 66.7,189.2 20.5,123.6" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="163.7,74.5 199.3,104.4 163.7,182.2 128.0,152.3" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="127.1,97.7 160.1,75.6 127.1,147.5" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="200.2,48.7 167.3,70.8 200.2,98.4" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="200.2,159.0 167.3,181.2 200.2,109.2" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="127.1,208.1 160.1,186.0 127.1,158.3" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/></svg>',
   megaminx:
     '<svg viewBox="0 0 220 220" width="100%" height="100%" aria-hidden="true" focusable="false"><polygon points="142.4,158.5 77.6,184.9 85.5,209.6 155.1,198.5 190.3,166.9" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="8.0,119.7 42.4,169.3 85.5,209.6 77.6,184.9 29.7,129.3" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="29.7,53.1 8.0,119.7 29.7,129.3 64.9,68.6 64.9,21.5" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="134.5,86.7 64.9,68.6 29.7,129.3 77.6,184.9 142.4,158.5" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="134.5,86.7 142.4,158.5 190.3,166.9 212.0,100.3 177.6,50.7" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="64.9,21.5 64.9,68.6 134.5,86.7 177.6,50.7 134.5,10.4" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="105.6,184.3 109.2,195.8 141.8,190.6 158.3,175.9 135.9,171.9" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="142.0,159.3 122.2,167.3 136.9,169.9 156.7,161.8" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="119.3,168.5 101.9,175.6 104.3,183.2 133.9,171.1" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="79.1,184.9 81.5,192.4 101.3,184.4 98.9,176.8" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="81.9,193.6 84.0,200.2 105.3,196.8 101.7,185.5" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="86.7,208.9 108.0,205.5 105.6,197.9 84.4,201.3" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="111.2,205.0 129.9,202.0 140.7,192.3 108.8,197.4" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="154.4,198.1 165.1,188.4 143.8,191.8 133.1,201.5" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="166.7,187.0 176.2,178.5 161.5,175.9 145.4,190.4" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="188.5,167.4 173.9,164.9 163.1,174.5 177.8,177.1" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="171.7,164.5 158.8,162.2 139.1,170.3 161.0,174.1" fill="#ccaa00" stroke="#ccaa00" stroke-width="0.8" stroke-linejoin="round"/><polygon points="45.7,165.7 65.9,184.6 62.2,173.0 39.8,147.0 29.6,142.5" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="9.2,121.0 19.7,136.1 26.3,139.1 15.8,123.9" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="21.3,138.4 30.5,151.7 43.7,164.0 27.9,141.3" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="42.6,169.1 55.8,181.5 45.2,166.3 32.1,154.0" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="57.7,183.3 69.3,194.1 66.9,186.6 47.2,168.1" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="84.4,208.3 82.0,200.7 68.9,188.4 71.3,196.0" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="81.6,199.6 79.5,192.9 64.9,176.0 68.5,187.3" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="76.8,184.3 62.1,167.3 64.5,174.8 79.2,191.8" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="60.0,164.8 47.1,149.8 40.5,146.9 62.4,172.3" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="30.3,130.3 23.6,127.4 38.3,144.3 44.9,147.3" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="22.6,126.9 16.8,124.3 27.3,139.5 37.3,143.9" fill="#007c39" stroke="#007c39" stroke-width="0.8" stroke-linejoin="round"/><polygon points="24.7,97.8 34.9,102.3 51.4,73.9 51.4,51.8 34.9,66.6" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="30.0,53.8 23.4,74.2 34.1,64.5 40.8,44.1" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="22.4,77.2 16.5,95.1 23.2,98.1 33.1,67.6" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="8.9,118.5 15.6,121.5 22.2,101.1 15.6,98.2" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="16.5,121.9 22.4,124.5 33.1,105.9 23.2,101.5" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="30.0,127.9 40.8,109.3 34.1,106.4 23.4,124.9" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="42.4,106.6 51.8,90.2 51.8,75.8 35.7,103.6" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="64.2,68.9 64.2,54.5 53.4,73.1 53.4,87.5" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="64.2,52.4 64.2,39.7 53.4,49.3 53.4,70.9" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="64.2,23.1 53.4,32.8 53.4,47.2 64.2,37.5" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="51.8,34.2 42.4,42.7 35.7,63.1 51.8,48.6" fill="#7fdb57" stroke="#7fdb57" stroke-width="0.8" stroke-linejoin="round"/><polygon points="78.2,98.9 61.7,127.4 84.1,153.4 114.4,141.0 110.8,107.4" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="133.3,87.8 112.0,82.3 114.4,104.2 135.6,109.8" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="108.8,81.5 90.1,76.6 79.3,95.2 111.2,103.4" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="65.6,70.3 54.9,88.8 76.2,94.3 86.9,75.8" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="53.3,91.6 43.8,107.9 58.5,124.9 74.6,97.1" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="31.5,129.2 46.1,146.2 56.9,127.7 42.2,110.7" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="48.3,148.8 61.2,163.7 80.9,155.6 59.0,130.2" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="78.0,183.2 97.8,175.1 83.1,158.2 63.3,166.2" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="100.7,173.9 118.1,166.8 115.7,144.9 86.1,157.0" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="140.9,157.6 138.5,135.6 118.7,143.7 121.1,165.6" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="138.1,132.3 136.0,113.0 114.7,107.5 118.3,140.4" fill="#b31b35" stroke="#b31b35" stroke-width="0.8" stroke-linejoin="round"/><polygon points="157.8,134.1 180.2,138.0 190.4,106.8 174.3,83.6 154.1,100.5" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="135.6,87.4 138.0,109.4 151.1,98.4 148.7,76.4" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="138.4,112.7 140.5,132.0 155.1,134.5 151.5,101.7" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="143.2,157.2 157.9,159.8 155.5,137.8 140.8,135.2" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="160.0,160.2 172.9,162.4 179.5,142.0 157.6,138.2" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="189.7,165.4 196.4,145.0 181.7,142.4 175.1,162.8" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="197.4,142.0 203.2,124.0 192.7,108.9 182.7,139.4" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="210.8,100.6 200.3,85.5 193.7,105.8 204.2,121.0" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="198.7,83.2 189.5,69.9 176.3,80.9 192.1,103.6" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="177.4,52.4 164.2,63.4 174.8,78.6 187.9,67.6" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="162.3,65.1 150.7,74.8 153.1,96.7 172.8,80.3" fill="#663390" stroke="#663390" stroke-width="0.8" stroke-linejoin="round"/><polygon points="91.7,57.4 124.3,65.9 144.4,49.0 124.3,30.2 91.7,35.4" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="66.4,22.2 66.4,36.6 87.7,33.2 87.7,18.8" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="66.4,38.8 66.4,51.5 87.7,57.0 87.7,35.4" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="66.4,68.0 87.7,73.5 87.7,59.1 66.4,53.6" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="90.8,74.4 109.5,79.2 122.7,68.2 90.8,59.9" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="134.0,85.5 147.1,74.5 125.9,69.0 112.7,80.0" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="149.1,72.9 160.7,63.2 147.5,50.9 127.8,67.4" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="175.8,50.6 162.6,38.3 149.5,49.3 162.6,61.6" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="160.7,36.4 149.1,25.6 127.8,29.0 147.5,47.4" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="134.0,11.4 112.7,14.8 125.9,27.2 147.1,23.8" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/><polygon points="109.5,15.3 90.8,18.3 90.8,32.7 122.7,27.7" fill="#ffcea8" stroke="#ffcea8" stroke-width="0.8" stroke-linejoin="round"/></svg>',
+  cube4:
+    '<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true" focusable="false"><rect width="100" height="100" rx="14" fill="#141414"/>' +
+    [
+      ["#ffd500", "#ff5800", "#ffd500", "#009b48"],
+      ["#0046ad", "#ffd500", "#c41e3a", "#ffd500"],
+      ["#ffd500", "#009b48", "#ffd500", "#ff5800"],
+      ["#c41e3a", "#ffd500", "#0046ad", "#ffd500"],
+    ]
+      .map((row, r) =>
+        row
+          .map(
+            (c, k) =>
+              '<rect x="' +
+              (6 + k * 22) +
+              '" y="' +
+              (6 + r * 22) +
+              '" width="18" height="18" rx="4" fill="' +
+              c +
+              '"/>',
+          )
+          .join(""),
+      )
+      .join("") +
+    "</svg>",
   axis: '<svg viewBox="0 0 220 220" width="100%" height="100%" aria-hidden="true" focusable="false"><polygon points="94.6,8.0 202.0,44.7 125.4,96.2 18.0,59.5" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="18.0,59.5 125.4,96.2 125.4,212.0 18.0,175.3" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="125.4,96.2 202.0,44.7 202.0,160.5 125.4,212.0" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="94.4,9.1 115.4,16.3 94.1,37.8 62.3,30.6" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="60.6,32.0 92.4,39.2 75.4,56.4 38.9,46.6" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="37.6,47.7 74.1,57.5 59.0,72.8 20.1,59.5" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="117.8,16.9 155.6,29.9 136.5,47.6 96.6,38.5" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="95.1,39.9 135.1,49.0 115.5,67.2 78.2,57.1" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="76.8,58.4 114.1,68.4 95.9,85.3 61.8,73.6" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="158.6,30.7 199.7,44.8 180.5,57.7 139.5,48.4" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="137.9,49.7 178.9,59.0 152.1,77.0 118.3,67.9" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="116.6,69.2 150.4,78.3 125.2,95.2 98.4,86.1" fill="#ffe200" stroke="#ffe200" stroke-width="0.8" stroke-linejoin="round"/><polygon points="18.9,61.5 39.9,68.7 47.1,114.1 18.9,110.0" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="19.2,113.0 47.3,117.2 53.0,153.4 19.2,145.8" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="19.4,148.2 53.2,155.8 58.3,188.0 19.4,174.6" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="42.2,69.2 79.9,82.2 84.8,119.9 49.4,114.7" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="49.8,117.7 85.2,122.9 90.1,161.7 55.5,153.9" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="55.9,156.6 90.5,164.4 95.1,200.4 61.0,188.7" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="82.8,82.9 123.9,97.0 123.9,126.0 87.6,120.6" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="87.8,123.4 124.1,128.8 124.1,169.3 92.7,162.2" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="92.9,165.1 124.3,172.1 124.3,210.3 97.5,201.1" fill="#00863e" stroke="#00863e" stroke-width="0.8" stroke-linejoin="round"/><polygon points="126.0,97.5 141.0,87.4 146.1,127.0 126.0,146.0" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="126.2,148.8 146.3,129.9 150.4,161.4 126.2,181.6" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="126.3,183.8 150.5,163.6 154.1,191.6 126.3,210.3" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="142.6,86.1 169.6,68.0 173.0,101.8 147.8,125.7" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="148.1,128.3 173.3,104.5 176.9,139.2 152.1,159.8" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="152.4,162.2 177.1,141.5 180.4,173.8 156.0,190.2" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="171.6,66.4 201.0,46.7 201.0,75.7 175.0,100.2" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="175.2,102.8 201.1,78.3 201.1,118.8 178.7,137.5" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/><polygon points="178.8,140.3 201.2,121.6 201.2,159.7 182.1,172.5" fill="#cc4600" stroke="#cc4600" stroke-width="0.8" stroke-linejoin="round"/></svg>',
   ghost:
     '<svg viewBox="0 0 220 220" width="100%" height="100%" aria-hidden="true" focusable="false"><polygon points="94.6,8.0 202.0,44.7 125.4,96.2 18.0,59.5" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="18.0,59.5 125.4,96.2 125.4,212.0 18.0,175.3" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="125.4,96.2 202.0,44.7 202.0,160.5 125.4,212.0" fill="#141414" stroke="#141414" stroke-width="5" stroke-linejoin="round"/><polygon points="94.3,9.0 108.3,13.8 93.0,36.6 64.4,29.1" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="62.9,30.5 91.5,38.1 78.9,57.0 40.3,45.7" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="39.1,46.9 77.6,58.2 66.2,75.2 20.3,59.5" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="110.6,14.4 149.7,27.8 133.9,47.4 95.3,37.3" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="94.2,38.8 132.8,48.9 117.3,68.1 81.5,57.7" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="80.5,59.1 116.2,69.5 101.8,87.4 69.1,76.1" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="152.8,28.8 199.6,44.8 178.2,59.1 137.0,48.4" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="135.5,49.7 176.7,60.5 150.7,77.9 120.0,68.9" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="118.5,70.2 149.2,79.2 125.3,95.3 104.1,88.1" fill="#d5dbe3" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="19.4,61.0 60.3,75.0 53.5,106.3 19.4,83.6" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="19.1,86.1 53.2,108.8 45.6,143.4 19.1,129.2" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="18.8,132.1 45.3,146.3 37.8,180.6 18.8,174.1" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="63.0,76.4 96.8,87.9 89.5,129.9 56.2,107.6" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="55.6,110.3 89.0,132.5 83.6,163.9 48.1,144.9" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="47.6,147.3 83.1,166.3 78.2,194.6 40.1,181.5" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="99.1,89.1 124.3,97.7 124.3,152.6 91.9,131.1" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="91.6,134.0 124.0,155.6 124.0,185.8 86.2,165.5" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="86.0,167.6 123.8,187.9 123.8,210.5 81.1,195.9" fill="#aeb3b9" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="125.9,97.0 137.3,89.4 143.6,119.0 125.9,126.1" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="126.2,128.6 143.8,121.6 151.2,156.4 126.2,169.1" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="126.4,171.8 151.5,159.1 157.8,188.9 126.4,209.9" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="138.9,88.5 166.6,70.0 172.7,107.2 145.2,118.2" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="145.7,120.7 173.2,109.7 178.6,142.6 153.0,155.6" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="153.5,157.9 179.0,144.9 183.4,171.8 159.8,187.7" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="168.7,68.8 200.9,47.2 200.9,95.6 174.8,106.1" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="175.0,108.9 201.1,98.5 201.1,131.2 180.4,141.7" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/><polygon points="180.6,144.0 201.3,133.4 201.3,159.9 185.1,170.8" fill="#a0a4ab" stroke="#e9edf2" stroke-width="1.4" stroke-linejoin="round"/></svg>',
@@ -10131,9 +10491,11 @@ const topScroll = () => window.scrollTo({ top: 0, behavior: reduced() ? "auto" :
 const navList = () =>
   store.puzzle === "pyr"
     ? ["puzzles", "pyr0", "pyr1", "pyr2", "pyr3", "pyrprac", "timer"]
-    : store.puzzle === "222"
-      ? ["puzzles", "progress", ...TRACKS.two, "practice", "timer"]
-      : ["puzzles", "progress", "mycube", "track", ...TRACKS[store.track], "practice", "timer"];
+    : store.puzzle === "four"
+      ? ["puzzles", "four", "timer"]
+      : store.puzzle === "222"
+        ? ["puzzles", "progress", ...TRACKS.two, "practice", "timer"]
+        : ["puzzles", "progress", "mycube", "track", ...TRACKS[store.track], "practice", "timer"];
 function buildNav() {
   const nav = $("#steps");
   nav.innerHTML = "";
@@ -10168,18 +10530,29 @@ function navLabel(v) {
         " method</span>",
     };
   }
-  if (v === "puzzles")
+  if (v === "puzzles") {
+    const art =
+        store.puzzle === "pyr"
+          ? PUZZLE_ART.pyraminx
+          : store.puzzle === "four"
+            ? PUZZLE_ART.cube4
+            : store.puzzle === "222"
+              ? PUZZLE_ART.cube2
+              : PUZZLE_ART.cube3,
+      name = store.puzzle === "pyr" ? "Pyraminx" : store.puzzle === "four" ? "4×4" : store.puzzle === "222" ? "2×2" : "3×3";
     return {
       cls: "sp puzzle",
       html:
         '<span class="pzmini" aria-hidden="true">' +
-        (store.puzzle === "pyr" ? PUZZLE_ART.pyraminx : store.puzzle === "222" ? PUZZLE_ART.cube2 : PUZZLE_ART.cube3) +
+        art +
         "</span><span>" +
-        (store.puzzle === "pyr" ? "Pyraminx" : store.puzzle === "222" ? "2×2" : "3×3") +
+        name +
         "</span>" +
         '<svg class="pzchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' +
         '<span class="sr">. Pick a puzzle</span>',
     };
+  }
+  if (v === "four") return { cls: "sp", html: tileHTML({ bg: "#141414", fg: "#fff", svg: PUZZLE_ART.cube4 }) + "<span>4×4</span>" };
   if (typeof v === "string" && /^pyr\d$/.test(v)) {
     const st = PYR_STEPS[+v[3]],
       done = !!store.done[st.id];
@@ -10231,6 +10604,7 @@ const NAMED_VIEWS = {
   pyr1: "pyr-centers",
   pyr2: "pyr-bottom",
   pyr3: "pyr-top",
+  four: "four",
   puzzles: "puzzles",
   mycube: "my-cube",
   progress: "progress",
@@ -10283,6 +10657,7 @@ function showView(v) {
   else if (v === "puzzles") openPuzzles();
   else if (v === "pyrprac") openPyrPractice();
   else if (typeof v === "string" && /^pyr\d$/.test(v)) openPyrStep(+v[3]);
+  else if (v === "four") openFour();
   else if (v === "practice") openPracticeList();
   else if (v === "quiz") openQuiz();
   else if (v === "timer") openTimer();
@@ -10291,7 +10666,7 @@ function showView(v) {
 /* Which panels are visible in each mode */
 function layout(mode) {
   const any = (...m) => m.includes(mode);
-  const wide = any("progress", "algs", "quiz", "timer", "puzzles", "pyr");
+  const wide = any("progress", "algs", "quiz", "timer", "puzzles", "pyr", "four");
   $("main").classList.toggle("wide", wide);
   $(".stagecol").hidden = wide;
   $("main").classList.toggle("paintmode", mode === "paint");
@@ -10302,6 +10677,7 @@ function layout(mode) {
   $("#progressPanel").hidden = mode !== "progress";
   $("#puzzlesPanel").hidden = mode !== "puzzles";
   $("#pyrPanel").hidden = mode !== "pyr";
+  $("#fourPanel").hidden = mode !== "four";
   $("#algsPanel").hidden = mode !== "algs";
   $("#quizPanel").hidden = mode !== "quiz";
   $("#timerPanel").hidden = mode !== "timer";
@@ -10309,12 +10685,12 @@ function layout(mode) {
   $("#casePanel").hidden = !any("cases", "solve", "watch");
   $("#trainPanel").hidden = mode !== "trainer";
   $("#practicePanel").hidden = mode !== "practice";
-  $("#detail").hidden = any("paint", "progress", "algs", "quiz", "timer", "puzzles", "pyr");
+  $("#detail").hidden = any("paint", "progress", "algs", "quiz", "timer", "puzzles", "pyr", "four");
   $("#caseCtrl").hidden = !any("cases", "solve", "watch");
   $("#trainCtrl").hidden = mode !== "trainer";
   $("#paintCtrl").hidden = mode !== "paint";
   $("#practiceCtrl").hidden = mode !== "practice";
-  $("#tips").hidden = mode === "quiz";
+  $("#tips").hidden = any("quiz", "four");
 }
 
 /* ================= Phone step bar: the lessons folded into one "Step N of M" chip =================
@@ -12285,10 +12661,10 @@ const SOON_SIZES = [4, 5, 6, 7];
 function setPuzzle(p) {
   if (store.puzzle === p) return;
   store.puzzle = p;
-  useTimerPuzzle(p === "pyr" ? "pyram" : p);
+  useTimerPuzzle(p === "pyr" ? "pyram" : p === "four" ? "444" : p);
   save();
   buildNav();
-  $("#live").textContent = p === "pyr" ? "Pyraminx." : p === "222" ? "2×2 cube." : "3×3 cube.";
+  $("#live").textContent = p === "pyr" ? "Pyraminx." : p === "four" ? "4×4 cube." : p === "222" ? "2×2 cube." : "3×3 cube.";
 }
 const lastStepFor = (track) =>
   TRACKS[track].includes(store.lastStep) ? store.lastStep : TRACKS[track][track === "two" ? 0 : 0];
@@ -12345,7 +12721,9 @@ function openPuzzles() {
   enterWideView("puzzles", PUZZLETILE, "Pick a puzzle");
   layout("puzzles");
   const two = store.puzzle === "222",
-    pyr = store.puzzle === "pyr";
+    pyr = store.puzzle === "pyr",
+    four = store.puzzle === "four",
+    other = two || pyr || four;
   $("#puzzlesPanel").innerHTML =
     '<p class="goal">Lessons for the 3×3, 2×2 and Pyraminx today, and the timer for every puzzle. More lessons are on the way.</p>' +
     "<h2>Cubes</h2>" +
@@ -12355,8 +12733,8 @@ function openPuzzles() {
       PUZZLE_ART.cube3,
       "3×3 cube",
       "Beginner and speed-method lessons, a solver for your own cube, camera scanning, drills and a timer.",
-      { id: "pzContinue", label: two || pyr ? "Switch to the 3×3" : "Continue with the 3×3" },
-      !two && !pyr,
+      { id: "pzContinue", label: other ? "Switch to the 3×3" : "Continue with the 3×3" },
+      !other,
     ) +
     nowCard(
       "cube2",
@@ -13174,6 +13552,348 @@ function pyrDrillDone() {
   pyrActs();
   $("#pyAgain").focus();
 }
+
+/* ================= 4×4: interactive 3D cube, moves, centers, edge pairing, finishing and parity =================
+   A 4×4 has far too many positions for a shortest-solution search (unlike the 2×2 and Pyraminx), so this isn't a
+   step-by-step case trainer: it's one page explaining the extra moves, letting you explore freely on a live 4×4, and
+   a tracked practice for the one thing worth memorizing exactly — the parity fix, verified against the 4×4 model in
+   cube4.js rather than taken on faith (see tests/cube4.test.mjs). */
+const F4COL = { U: "#ffd500", D: "#ffffff", F: "#009b48", B: "#0046ad", R: "#ff5800", L: "#c41e3a" };
+const F4_PARITY = "2R2 U2 2R2 Uw2 2R2 2U2";
+let F4 = null;
+
+function f4Reset() {
+  F4 = { state: newCube4(), rx: -26, ry: -34, token: 0, drag: null, prime: false, practice: null };
+}
+const F4_PAD = [
+  { label: "Outer layer only", moves: ["R", "L", "U", "D", "F", "B"] },
+  { label: "Wide (outer + the layer next to it — how you'll turn a 4×4 most of the time)", moves: ["Rw", "Lw", "Uw", "Dw", "Fw", "Bw"] },
+  { label: "Inner slice only (for the parity fix)", moves: ["2R", "2L", "2U", "2D", "2F", "2B"] },
+];
+function f4PadHTML(id, rows) {
+  return (
+    '<div class="f4pad" id="' +
+    id +
+    '">' +
+    rows
+      .map(
+        (row) =>
+          '<div class="f4row"><span class="f4rowlbl">' +
+          esc(row.label) +
+          '</span><div class="f4btns">' +
+          row.moves
+            .map((m) => '<button data-m="' + m + '" aria-label="' + f4SpokenMove(m) + '">' + esc(m) + "</button>")
+            .join("") +
+          "</div></div>",
+      )
+      .join("") +
+    "</div>"
+  );
+}
+const F4_FACE_NAME = { R: "right", L: "left", U: "top", D: "bottom", F: "front", B: "back" };
+function f4SpokenMove(m) {
+  const slice = m[0] === "2",
+    wide = !slice && m[1] === "w",
+    letter = slice ? m[1] : m[0];
+  return (
+    (slice ? "Inner " : wide ? "Wide " : "") +
+    F4_FACE_NAME[letter] +
+    (slice ? " slice" : "") +
+    (wide ? " turn" : "")
+  );
+}
+function f4StageHTML() {
+  return (
+    '<div class="f4stagewrap"><div class="f4stage" id="f4Stage" tabindex="0" role="img" aria-label="3D 4 by 4 cube. Drag to look around, or use the buttons below to turn it.">' +
+    '<div class="f4scene" id="f4Scene"></div></div>' +
+    '<div class="f4stagebtns"><button class="pill" id="f4ResetBtn">Reset to solved</button>' +
+    '<button class="pill" id="f4PrimeBtn" aria-pressed="false">Prime next move (′)</button></div></div>'
+  );
+}
+const F4_S = 30;
+function f4BaseT(p, n) {
+  const cx = (p[0] + n[0] * 0.5) * F4_S,
+    cy = -(p[1] + n[1] * 0.5) * F4_S,
+    cz = (p[2] + n[2] * 0.5) * F4_S;
+  const o =
+    n[0] === 1
+      ? "rotateY(90deg)"
+      : n[0] === -1
+        ? "rotateY(-90deg)"
+        : n[1] === 1
+          ? "rotateX(90deg)"
+          : n[1] === -1
+            ? "rotateX(-90deg)"
+            : n[2] === -1
+              ? "rotateY(180deg)"
+              : "rotateY(0deg)";
+  return "translate3d(" + cx.toFixed(2) + "px," + cy.toFixed(2) + "px," + cz.toFixed(2) + "px) " + o;
+}
+function f4Build() {
+  const scene = $("#f4Scene");
+  scene.innerHTML = "";
+  const sz = Math.round(F4_S * 0.92),
+    r = Math.round(sz * 0.18);
+  F4.els = F4.state.map((s) => {
+    const el = document.createElement("div");
+    el.className = "f4s";
+    el.style.width = el.style.height = sz + "px";
+    el.style.marginLeft = el.style.marginTop = -sz / 2 + "px";
+    el.style.borderRadius = r + "px";
+    scene.appendChild(el);
+    return el;
+  });
+  const bs = 4 * F4_S - 2;
+  F4.body = [
+    [0, 1],
+    [0, -1],
+    [1, 1],
+    [1, -1],
+    [2, 1],
+    [2, -1],
+  ].map(([ax, side]) => {
+    const el = document.createElement("div");
+    el.className = "f4body";
+    el.style.width = el.style.height = bs + "px";
+    el.style.marginLeft = el.style.marginTop = -bs / 2 + "px";
+    const h = 2 * F4_S * side;
+    el.style.transform =
+      ax === 0
+        ? "translate3d(" + h + "px,0,0) rotateY(90deg)"
+        : ax === 1
+          ? "translate3d(0," + -h + "px,0) rotateX(90deg)"
+          : "translate3d(0,0," + h + "px)";
+    scene.insertBefore(el, scene.firstChild);
+    return { el, ax, side };
+  });
+  f4Render();
+  f4Paint();
+  f4ApplyCam();
+}
+function f4Render() {
+  F4.state.forEach((s, k) => (F4.els[k].style.transform = f4BaseT(s.p, s.n)));
+}
+function f4Paint() {
+  F4.state.forEach((s, k) => (F4.els[k].style.background = F4COL[s.c]));
+}
+function f4ApplyCam() {
+  const el = $("#f4Scene");
+  if (el) el.style.transform = "rotateX(" + F4.rx.toFixed(2) + "deg) rotateY(" + F4.ry.toFixed(2) + "deg)";
+}
+function f4Animate(mv, cb) {
+  const o = parseMove4(mv),
+    idx = [];
+  F4.state.forEach((s, k) => {
+    if (o.layers.includes(s.p[o.ax])) idx.push(k);
+  });
+  const fn = ["rotateX", "rotateY", "rotateZ"][o.ax],
+    target = (o.ax === 1 ? 1 : -1) * o.d * 90 * o.t,
+    dur = reduced() ? 0 : 230 * (o.t === 2 ? 1.4 : 1),
+    t0 = performance.now(),
+    tk = ++F4.token;
+  function f(t) {
+    if (tk !== F4.token) return;
+    const u = dur ? Math.min(1, (t - t0) / dur) : 1,
+      e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2,
+      a = (target * e).toFixed(2);
+    idx.forEach((k) => {
+      F4.els[k].style.transform = fn + "(" + a + "deg) " + f4BaseT(F4.state[k].p, F4.state[k].n);
+    });
+    if (u < 1) {
+      requestAnimationFrame(f);
+      return;
+    }
+    idx.forEach((k) => turnSticker(F4.state[k], o));
+    f4Render();
+    if (cb) cb();
+  }
+  requestAnimationFrame(f);
+}
+function f4Tap(m) {
+  const mv = F4.prime ? invMove4(m) : m;
+  F4.prime = false;
+  const pb = $("#f4PrimeBtn");
+  if (pb) pb.setAttribute("aria-pressed", "false");
+  f4Animate(mv, () => {});
+}
+/* the practice pad shows the algorithm's own moves exactly, so it never consults the free-explore prime toggle */
+function f4TapExact(m) {
+  f4Animate(m, () => f4PracticeTap(m));
+}
+function f4Drag() {
+  const stage = $("#f4Stage");
+  if (!stage) return;
+  stage.addEventListener("pointerdown", (e) => {
+    F4.drag = { x: e.clientX, y: e.clientY, rx: F4.rx, ry: F4.ry, on: e.pointerType === "mouse", id: e.pointerId };
+    if (F4.drag.on)
+      try {
+        stage.setPointerCapture(e.pointerId);
+      } catch (_) {}
+  });
+  stage.addEventListener("pointermove", (e) => {
+    if (!F4.drag) return;
+    const dx = e.clientX - F4.drag.x,
+      dy = e.clientY - F4.drag.y;
+    if (!F4.drag.on) {
+      if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+        F4.drag.on = true;
+        try {
+          stage.setPointerCapture(F4.drag.id);
+        } catch (_) {}
+      } else return;
+    }
+    F4.ry = F4.drag.ry + dx * 0.5;
+    F4.rx = clamp(F4.drag.rx - dy * 0.5, -88, 88);
+    f4ApplyCam();
+  });
+  ["pointerup", "pointercancel"].forEach((t) => stage.addEventListener(t, () => (F4.drag = null)));
+}
+
+/* ---------- the tracked practice: the parity fix ---------- */
+function f4PracticeStart() {
+  F4.practice = newPractice(F4_PARITY.split(" "));
+  F4.practiceT0 = null;
+  f4PracticeStatus("Tap the moves above (or on the pad below) to run the fix. It's the same six moves every time.");
+}
+function f4PracticeStatus(text) {
+  const el = $("#f4PracStatus");
+  if (el) el.textContent = text;
+}
+function f4PracticeTap(m) {
+  if (F4.practiceT0 === null) F4.practiceT0 = performance.now();
+  const r = practiceTap(F4.practice, m);
+  if (r.result === "wrong") {
+    f4PracticeStatus("Not that one. Next move: " + r.expected.replace("'", "′"));
+    return;
+  }
+  if (r.result === "half") {
+    f4PracticeStatus("Good — that move again finishes it.");
+    return;
+  }
+  if (r.result === "done") {
+    const ms = performance.now() - F4.practiceT0,
+      clean = F4.practice.mistakes === 0;
+    store.practice["four-parity"] = recordRun(store.practice["four-parity"], { clean, memory: true, ms });
+    save();
+    const stat = $("#f4PracStat");
+    if (stat) stat.textContent = f4PracticeStatusLine();
+    f4PracticeStatus(
+      (clean ? "Clean run, " + (ms / 1000).toFixed(1) + " s. " : "Done, with " + F4.practice.mistakes + " mistake(s). ") +
+        "The cube's back to solved — that's how you know it worked.",
+    );
+    return;
+  }
+  f4PracticeStatus("Move " + F4.practice.i + " of " + F4.practice.moves.length + ".");
+}
+function f4PracticeStatusLine() {
+  const s = store.practice["four-parity"];
+  return !s ? "New" : isLearned(s) ? "Learned" : s.memClean + " of " + LEARN_RUNS + " clean runs";
+}
+
+function f4SectionsHTML() {
+  return (
+    '<section class="f4sec"><h2>The extra moves</h2>' +
+    "<p>A 4×4 has no fixed centers, so the colors themselves are the only way to tell which face is which. Every face " +
+    "move comes in three depths: a plain letter turns just the outer layer; a letter with <b>w</b> (like " +
+    "<b>Rw</b>) turns that layer and the one next to it together — how you'll make most turns; and a <b>2</b> before " +
+    "the letter (like <b>2R</b>) turns only the inner layer, used below for the parity fix. Try them on the cube above.</p>" +
+    f4PadHTML("f4PadMoves", F4_PAD) +
+    "</section>" +
+    '<section class="f4sec"><h2>Build the centers</h2>' +
+    "<p>Each face needs a solid 2×2 block of one color. There's no algorithm to memorize for this part — gather two " +
+    "matching center pieces onto a face with wide turns, then build outward the same way you'd nudge pieces around on " +
+    "a slide puzzle. Do the first two centers on opposite faces freely; for the rest, wide turns on a face that " +
+    "already has centers built will disturb it, so turn the other faces instead and finish with whole-cube rotations " +
+    "(drag the cube, or picture turning the whole thing) to carry a piece where it's needed.</p></section>" +
+    '<section class="f4sec"><h2>Pair the edges</h2>' +
+    "<p>Each edge location has two matching wing pieces that need to sit together so they act like one thick 3×3 " +
+    "edge. The common technique: turn the top layer (<b>U</b>, which doesn't disturb any pairing already done) until " +
+    "an unpaired wing sits above its match, then a wide or inner-slice turn on that side joins them, then undo the " +
+    "<b>U</b> turn to put everything else back. It takes some hunting at first — that's normal.</p></section>" +
+    '<section class="f4sec"><h2>Finish it — and the two things only a 4×4 can do</h2>' +
+    "<p>Once every center is solid and every edge is paired, the 4×4 behaves exactly like a 3×3: solve the rest with " +
+    "the lessons you already know. Occasionally, right at the end, you'll hit something that could never happen on a " +
+    "real 3×3 — centers and edge-pairing have just enough extra freedom to allow it:</p>" +
+    '<ul class="f4list">' +
+    "<li><b>Two edges swapped.</b> Everything else is solved, but two edges have traded places. Fixed by the six-move " +
+    "algorithm below — verified against this app's own 4×4 model, not just copied from memory.</li>" +
+    "<li><b>One edge won't go in.</b> Rarer, and there's no memorized fix here: take that edge's pairing apart and " +
+    "pair it with a different matching wing instead. It resolves the problem without needing another algorithm.</li>" +
+    "</ul>" +
+    '<div class="f4alg"><span class="f4algname">Fix for two edges swapped</span><span class="f4algmoves">' +
+    esc(F4_PARITY.replace(/'/g, "′")) +
+    "</span></div>" +
+    '<div class="f4pracbox"><div class="f4pracrow"><span>Practice this fix</span><span class="algstat" id="f4PracStat">' +
+    f4PracticeStatusLine() +
+    '</span></div><p class="f4pracstatus" id="f4PracStatus">Starts the cube already showing the two-edges-swapped case, so every run begins the same way.</p>' +
+    '<div class="f4btns"><button class="pill" id="f4PracStart">Start practicing</button></div>' +
+    f4PadHTML("f4PadPrac", [{ label: "This algorithm's moves", moves: F4_PARITY.split(" ").filter((m, i, a) => a.indexOf(m) === i) }]) +
+    "</div></section>"
+  );
+}
+function openFour() {
+  enterWideView("four", { bg: "#141414", fg: "#fff", svg: PUZZLE_ART.cube4 }, "4×4 cube");
+  layout("four");
+  f4Reset();
+  $("#fourPanel").innerHTML =
+    '<p class="goal">A 4×4 adds two steps before it solves like a 3×3: building solid centers, then pairing up its ' +
+    "edges. No shortest-solution search here — a 4×4 has far too many positions for that — so this page explains the " +
+    "technique and lets you explore on a real 4×4, with one tracked practice for the fix you're most likely to need.</p>" +
+    f4StageHTML() +
+    f4SectionsHTML();
+  f4Build();
+  f4Drag();
+  $("#f4Stage").addEventListener("keydown", (e) => {
+    const k = e.key;
+    let used = true;
+    if (k === "ArrowLeft") F4.ry -= 12;
+    else if (k === "ArrowRight") F4.ry += 12;
+    else if (k === "ArrowUp") F4.rx = clamp(F4.rx - 10, -88, 88);
+    else if (k === "ArrowDown") F4.rx = clamp(F4.rx + 10, -88, 88);
+    else used = false;
+    if (used) {
+      e.preventDefault();
+      f4ApplyCam();
+    }
+  });
+  $("#f4ResetBtn").addEventListener("click", () => {
+    F4.practice = null;
+    F4.state = newCube4();
+    f4Render();
+    f4Paint();
+  });
+  $("#f4PadMoves").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-m]");
+    if (b) f4Tap(b.dataset.m);
+  });
+  $("#f4PadPrac").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-m]");
+    if (b) f4TapExact(b.dataset.m);
+  });
+  $("#f4PrimeBtn").addEventListener("click", () => {
+    F4.prime = !F4.prime;
+    $("#f4PrimeBtn").setAttribute("aria-pressed", String(F4.prime));
+  });
+  $("#f4PracStart").addEventListener("click", () => {
+    F4.state = newCube4();
+    F4_PARITY.split(" ")
+      .forEach((m) => moveInstant4(F4.state, m));
+    f4Render();
+    f4Paint();
+    f4PracticeStart();
+    $("#f4PracStat").textContent = f4PracticeStatusLine();
+  });
+}
+
+/* ================= Theme switch: light, system or dark ================= */
+function setTheme(theme) {
+  if (theme === "system") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("cubecoach:theme", theme);
+  document.querySelectorAll(".themeOpt").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === theme)));
+}
+document.querySelectorAll(".themeOpt").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.t)));
+setTheme(localStorage.getItem("cubecoach:theme") || "system");
 
 /* ================= Settings: letters and color layout ================= */
 function rerenderView() {

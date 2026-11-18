@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no" />
     <title>Cube coach</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -216,7 +216,7 @@ main {
   gap: 18px;
   grid-template-columns: minmax(0, 1fr);
 }
-@media (min-width: 900px) {
+@media (min-width: 900px), (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
   main {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     grid-template-areas: "stage head" "stage cases" "stage detail" "stage tips";
@@ -265,7 +265,7 @@ h1 {
   font-weight: 700;
   letter-spacing: -0.015em;
 }
-@media (min-width: 900px) {
+@media (min-width: 900px), (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
   h1 {
     font-size: 28px;
   }
@@ -320,6 +320,64 @@ h2 {
 .case[aria-pressed="true"] {
   border-color: var(--accent);
   box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+/* Never wider than the screen. iOS zooms the whole page out when anything sticks out sideways (3D-positioned cube
+   stickers can count, even when they look contained), which squeezed My cube into the left of the screen.
+   overflow-x: clip, unlike hidden, doesn't turn the page into a scroll box, so scrolling and sticky parts still work. */
+html,
+body {
+  overflow-x: clip;
+}
+#stage {
+  overflow: hidden;
+}
+
+/* A phone held sideways: the cube takes the left side at full height; the move caption, controls and pad move to the
+   right-hand column, under the title, so cube and controls are on screen together. */
+@media (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
+  main {
+    grid-template-areas: "stage head" "stage bar" "stage cases" "stage detail" "stage tips";
+    grid-template-rows: auto auto auto auto 1fr;
+  }
+  .stagecol {
+    display: contents;
+  }
+  .viewer {
+    grid-area: stage;
+    position: sticky;
+    top: calc(6px + env(safe-area-inset-top, 0px));
+  }
+  .bar {
+    grid-area: bar;
+  }
+}
+
+.stepmenu {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 4px;
+  padding: 10px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.stepmenu .sp {
+  width: 100%;
+  justify-content: flex-start;
+}
+.stepmenu .sp.cur {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* Screen-reader-only text inside the scrolling step bar must stay inside it. Without a positioned ancestor, an absolutely
+   positioned label is placed against the whole page, at its spot along the bar (550 points across on a 390-point phone),
+   which made the page wider than the screen; iOS then zoomed everything out. */
+#steps,
+.sp {
+  position: relative;
 }
 .viewer {
   position: relative;
@@ -547,7 +605,7 @@ h2 {
   color: var(--bg);
   border-color: var(--ink);
 }
-@media (max-width: 899px) {
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px) {
   .bar {
     position: fixed;
     left: 0;
@@ -1019,12 +1077,32 @@ h2 {
   box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.25);
   vertical-align: middle;
 }
-@media (max-width: 899px) {
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px) {
   main.paintmode .cases-sec {
     order: -1;
   }
   main.paintmode .head {
     order: -2;
+  }
+}
+
+.padmore {
+  display: none;
+}
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px) {
+  #ppad.collapsed .extra {
+    display: none;
+  }
+  .padmore {
+    display: block;
+    grid-column: 1 / -1;
+    min-height: 44px;
+    border-radius: 12px;
+    border: 1px dashed var(--ink2);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
   }
 }
 .ftabs {
@@ -1291,8 +1369,25 @@ h2 {
   font-weight: 700;
   font-size: 14px;
 }
+
+/* While painting, the palette stays in reach just above the bottom bar (its height is measured live, as it changes with
+   text size and the phone's home-indicator area). */
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px) {
+  /* only where the bottom bar is pinned to the screen (phones); on wider screens the bar sits in the left column */
+  .palette {
+    position: sticky;
+    bottom: calc(var(--barh, 140px) + 8px);
+    z-index: 4;
+    padding: 8px;
+    margin-left: -8px;
+    margin-right: -8px;
+    border-radius: 16px;
+    background: var(--bg);
+    box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.18);
+  }
+}
 /* ---------- Phase 2: wide screens (no 3D view), progress, practice, quiz ---------- */
-@media (min-width: 900px) {
+@media (min-width: 900px), (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
   main.wide {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "head" "cases" "detail" "tips";
@@ -1625,7 +1720,7 @@ h2 {
   color: #fff;
   border-color: var(--hl);
 }
-@media (max-width: 899px) {
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px) {
   .ppad button {
     height: 44px;
   }
@@ -1858,6 +1953,58 @@ h2 {
 }
 .pactions .pill.danger {
   margin-top: 0;
+}
+
+/* full-size tap targets: the letters button and the algorithm chips on Progress */
+#lettersBtn,
+.achip {
+  min-width: 44px;
+}
+
+@media (min-width: 900px), (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
+  .qcard:not(.qend):has(.qpicture svg) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 36px;
+    align-items: start;
+    max-width: 1040px;
+  }
+  .qcard:not(.qend):has(.qpicture svg) > * {
+    grid-column: 2;
+  }
+  .qcard:not(.qend):has(.qpicture svg) > .qtop {
+    grid-column: 1 / -1;
+  }
+  .qcard:not(.qend):has(.qpicture svg) > .qpicture {
+    grid-column: 1;
+    grid-row: 2 / span 8;
+  }
+  .qcard:not(.qend):has(.qpicture svg) .qthumb {
+    width: min(100%, 360px);
+    margin: 0 auto;
+  }
+  .qcard:not(.qend):has(.qpicture svg) .qthumb svg {
+    width: 100%;
+    height: auto;
+  }
+  /* Progress: stats four across, the step list in two columns */
+  #progressPanel .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  #progressPanel .plist {
+    columns: 2;
+    column-gap: 28px;
+  }
+  #progressPanel .plist > li {
+    break-inside: avoid;
+  }
+}
+
+/* a question without a picture stays one centered column */
+.qcard:not(.qend):not(:has(.qpicture svg)) {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 /* ---------- Phase 3: method switch, algorithm sets, timer ---------- */
 .sp.track {
@@ -2210,6 +2357,39 @@ body.timing .tpad {
 .scrline + .scrline {
   margin-top: 10px;
 }
+
+.tbtns {
+  flex-wrap: wrap;
+}
+@media (min-width: 900px), (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
+  /* desktop: scramble and time stay in view on the left; sessions, stats, chart and history on the right */
+  .tgrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 28px;
+    align-items: start;
+  }
+  .tmain {
+    position: sticky;
+    top: 14px;
+  }
+  .tside .sessbar {
+    margin-top: 0;
+  }
+}
+
+/* the three scramble buttons share one row on a phone */
+.tbtns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 8px;
+}
+.tbtns .pill {
+  justify-content: center;
+  padding-left: 8px;
+  padding-right: 8px;
+  white-space: nowrap;
+}
 /* ---------- Camera scanner ---------- */
 .scanbtn {
   width: auto;
@@ -2522,7 +2702,7 @@ body.timing .tpad {
   gap: 18px;
   grid-template-columns: minmax(0, 1fr);
 }
-@media (min-width: 900px) {
+@media (min-width: 900px), (orientation: landscape) and (min-width: 640px) and (max-height: 520px) {
   .pygrid {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     align-items: start;
@@ -2752,7 +2932,7 @@ body.timing .tpad {
   color: var(--ink2);
   min-height: 1.4em;
 }
-@media (max-width: 899px) {
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px) {
   .pysession .pystage {
     max-height: 30vh;
   }
@@ -3148,13 +3328,16 @@ const rowMoves = (rows) => {
   for (const r of rows) for (const pt of r.parts) for (let k = 0; k < pt.times; k++) out.push(...pt.moves);
   return out;
 };
-/* A lesson's starting state = its solution undone from a solved cube (rotated so green faces front). */
-function buildSetup(rows) {
+/* A lesson's starting state = its solution undone from where the step should end (rotated so green faces front).
+   Where the step should end: solved, except for the pieces later steps handle, which `rest` mixes up (so a demo of
+   step 5 ends with the corners still to do, as a real solve would). */
+function buildSetup(rows, rest = []) {
   const f = rowMoves(rows);
   let st;
   for (let j = 0; j < 4; j++) {
     st = newCube();
     for (let k = 0; k < j; k++) moveInstant(st, "y");
+    for (const m of rest) moveInstant(st, m);
     for (let i = f.length - 1; i >= 0; i--) moveInstant(st, invMove(f[i]));
     if (centerAt(st, [0, 0, 1]) === "F") break;
   }
@@ -6551,6 +6734,22 @@ const TRACKS = {
   speed: [0, 1].concat(SPEED_STEPS.map((s) => STEPS.indexOf(s))),
   two: TWO_STEPS.map((s) => STEPS.indexOf(s)),
 };
+/* Where each step's demos end: solved except for what later steps do. Each of these keeps its step's goal and the
+   first two layers, leaves the next step still to do, and is built from algorithms already checked on the cube:
+   the yellow-edges and corner-spots algorithms, Sune, T-perm, Ua-perm, and a twist pair (one corner twisted each way:
+   R′ D′ R D twice, U, four times, U′). Without this, every demo ended fully solved, so step 5 looked like it finished
+   the corners and Corner spots looked like it twisted them too. */
+const TWIST_PAIR = "R' D' R D R' D' R D U R' D' R D R' D' R D R' D' R D R' D' R D U'";
+const STEP_REST = {
+  "yellow-cross": A5 + " U " + A6 + " " + TWIST_PAIR,
+  "yellow-edges": A6 + " " + TWIST_PAIR,
+  "corner-spots": TWIST_PAIR,
+  "oll-cross": OLL_CORNERS[0].moves + " " + PLL.find((a) => a.id === "pll-t").moves,
+  "oll-corners": PLL.find((a) => a.id === "pll-t").moves,
+  "pll-corners": PLL.find((a) => a.id === "pll-ua").moves,
+  "two-oll": PLL.find((a) => a.id === "pll-t").moves,
+};
+const stepRest = (si) => (STEP_REST[STEPS[si].id] || "").split(" ").filter(Boolean);
 /* which lessons the step bar shows: the 2×2's, or the 3×3 method chosen */
 const curTrack = () => (store.puzzle === "222" ? "two" : store.track);
 const stepIndex = (id) => STEPS.findIndex((s) => s.id === id);
@@ -7404,6 +7603,12 @@ function sizeUp() {
   }
   const w = stage.clientWidth || 340;
   S = Math.round(clamp(w / 6.6, 40, 66));
+  /* a phone held sideways: fit the whole cube, with its buttons, in the screen's height */
+  if (
+    window.matchMedia &&
+    window.matchMedia("(orientation: landscape) and (min-width: 640px) and (max-height: 520px)").matches
+  )
+    S = Math.round(clamp(Math.min(S, (innerHeight - 110) / 5), 30, 66));
   stage.style.height = Math.round(S * 5) + 94 + "px";
   const pad = Math.max(2, Math.round(S * 0.065)),
     r = Math.round(S * 0.15);
@@ -7850,13 +8055,8 @@ function openProgress() {
     h += "</div>";
   }
   h +=
-    '<h2>Your data</h2><p class="goal" id="cloudStatus">' +
-    esc(cloudText()) +
-    "</p>" +
+    "<h2>Your data</h2>" +
     '<div class="pactions">' +
-    '<button class="pill" id="syncToggle" aria-pressed="' +
-    store.sync +
-    '">Keep a copy in my claude.ai account</button>' +
     '<button class="pill" id="backupBtn">Download a backup</button>' +
     '<button class="pill" id="restoreBtn">Restore from a backup</button>' +
     '<button class="pill" id="csvBtn">Download solve times (spreadsheet)</button>' +
@@ -7872,10 +8072,6 @@ function openProgress() {
   $("#progressPanel")
     .querySelectorAll("[data-alg]")
     .forEach((b) => b.addEventListener("click", () => goHash("practice-" + b.dataset.alg)));
-  $("#syncToggle").addEventListener("click", () => {
-    setSync(!store.sync);
-    $("#syncToggle").setAttribute("aria-pressed", String(store.sync));
-  });
   $("#backupBtn").addEventListener("click", exportBackup);
   $("#csvBtn").addEventListener("click", exportSolves);
   $("#restoreBtn").addEventListener("click", () => $("#restoreFile").click());
@@ -7914,7 +8110,7 @@ function openProgress() {
     [
       "A day counts toward your streak when you play a lesson, practice an algorithm, answer a quiz question, or time a solve.",
       "An algorithm counts as learned after three clean runs from memory.",
-      "Your progress is saved on this device, and privately in your claude.ai account when the account copy is on.",
+      "Your progress is saved on this device.",
     ],
     "#ffffff",
     false,
@@ -8066,6 +8262,8 @@ function bindAlgInfo() {
   });
 }
 function openAlgWatch(a) {
+  /* the 2×2's own algorithms stay on the 2×2; anything else is a 3×3 algorithm, so the 3×3's step bar comes back */
+  if (!(store.puzzle === "222" && inSet(a, "two"))) setPuzzle("333");
   setCubeSize(store.puzzle === "222" ? 2 : 3);
   cancelAll();
   pmode = "watch";
@@ -8084,7 +8282,9 @@ function openAlgWatch(a) {
 /* ================= Practice session: do it yourself, from hints or from memory ================= */
 const PAD_MOVES = ["R", "R'", "L", "L'", "U", "U'", "D", "D'", "F", "F'", "B", "B'"];
 /* The pad always has the 12 face turns; algorithms that use slices, wide moves or rotations get those letters too. */
-function buildPad(moves) {
+/* collapse: on a phone, show the 12 face turns and put the rest behind "More moves" (for drills, whose pads carry
+   every move a whole set uses). */
+function buildPad(moves, collapse = false) {
   const extra = [...new Set(moves.map((m) => m[0]).filter((c) => !"RLUDFB".includes(c)))].sort();
   const all = PAD_MOVES.concat(extra.flatMap((c) => [c, c + "'"]));
   $("#ppad").innerHTML = all
@@ -8094,6 +8294,7 @@ function buildPad(moves) {
         m +
         '" class="' +
         (isRotation(m) ? "whole" : "") +
+        (PAD_MOVES.includes(m) ? "" : " extra") +
         '" aria-label="' +
         esc(pretty(m).replace("′", " prime")) +
         '">' +
@@ -8101,9 +8302,20 @@ function buildPad(moves) {
         "</button>",
     )
     .join("");
+  const pad = $("#ppad");
+  pad.classList.toggle("collapsed", collapse && extra.length > 0);
+  if (collapse && extra.length) {
+    pad.insertAdjacentHTML("beforeend", '<button class="padmore" aria-expanded="false">More moves</button>');
+    pad.querySelector(".padmore").addEventListener("click", (e) => {
+      e.stopPropagation();
+      padMore(!pad.classList.contains("collapsed") ? false : true);
+    });
+  }
 }
 let PR = null;
 function openAlgPractice(a, mode) {
+  /* the 2×2's own algorithms stay on the 2×2; anything else is a 3×3 algorithm, so the 3×3's step bar comes back */
+  if (!(store.puzzle === "222" && inSet(a, "two"))) setPuzzle("333");
   setCubeSize(store.puzzle === "222" ? 2 : 3);
   cancelAll();
   solveReq++;
@@ -8299,6 +8511,15 @@ function finishPractice() {
   setCapText("✓", d, t);
   renderPractice();
   $("#prRestart").innerHTML = ICON.restart + "Again";
+}
+
+function padMore(open) {
+  const pad = $("#ppad"),
+    b = pad.querySelector(".padmore");
+  if (!b) return;
+  pad.classList.toggle("collapsed", !open);
+  b.setAttribute("aria-expanded", String(open));
+  b.textContent = open ? "Fewer moves" : "More moves";
 }
 
 /* ================= Quiz ================= */
@@ -8616,7 +8837,7 @@ function openDrill(set) {
   camTo(HOLD);
   /* the 2×2 drill: its yellow-top and last-corner cases (the first-layer trigger isn't a case) */
   const list = ALGS.filter((a) => inSet(a, set) && !(set === "two" && a.id === "sexy"));
-  buildPad([...new Set(list.flatMap((a) => algMoves(a)))]);
+  buildPad([...new Set(list.flatMap((a) => algMoves(a)))], true);
   DR = { set, list, solved: 0, times: [], shown: 0, last: null, queue: [] };
   $("#head").innerHTML =
     '<div class="title">' + tileHTML(PRACTICETILE) + "<h1>Drill: " + esc(DRILL_SETS[set]) + "</h1></div>";
@@ -8684,6 +8905,8 @@ function showDrillAnswer() {
   restartDrillCase();
   DR.assisted = true;
   DR.hint = { moves: DR.solution, i: 0 };
+  /* the arrows may need a move behind "More moves" */
+  if (DR.solution.some((m) => !PAD_MOVES.includes(m.replace("2", "")))) padMore(true);
   setCap(DR.hint.moves[0], "next");
   showArrow(DR.hint.moves[0]);
   renderDrill();
@@ -8933,6 +9156,7 @@ function renderTimer() {
   if (oldSel) oldSel.remove();
   $("#head").insertAdjacentHTML("beforeend", puzzleSelect());
   const h =
+    '<div class="tgrid"><div class="tmain">' +
     '<div class="tcard">' +
     '<div class="lbl">Scramble (' +
     TM.scr.length +
@@ -8945,11 +9169,11 @@ function renderTimer() {
     (TM.lines ? TM.lines.map((l) => '<div class="scrline">' + chipsHTML(l) + "</div>").join("") : chipsHTML(TM.scr)) +
     "</div>" +
     (SCRAMBLE_NOTE[puz] ? '<p class="scrnote">' + esc(SCRAMBLE_NOTE[puz]) + "</p>" : "") +
-    '<div class="tbtns"><button class="pill" id="newScr">' +
+    '<div class="tbtns"><button class="pill" id="newScr" aria-label="New scramble">' +
     ICON.restart +
-    "New scramble</button>" +
+    "New</button>" +
     (cubeLike
-      ? '<button class="pill" id="showScr">Show me on the cube</button><button class="pill" id="solveScr">Solve it with the app</button>'
+      ? '<button class="pill" id="showScr" aria-label="Show me on the cube">Show me</button><button class="pill" id="solveScr" aria-label="Solve it with the app">Solve it</button>'
       : "") +
     "</div>" +
     (USES_PRESETS.has(puz) ? presetButtons() : "") +
@@ -8965,6 +9189,7 @@ function renderTimer() {
     store.timer.inspect +
     '">15-second inspection</button></div>' +
     '<div class="sr" id="tlive" aria-live="assertive"></div>' +
+    '</div><div class="tside">' +
     sessionBar() +
     '<div class="stats tstats">' +
     tstat("Best", fmt(sum.best)) +
@@ -8978,7 +9203,8 @@ function renderTimer() {
     tstat("Solves", String(sum.count)) +
     "</div>" +
     chartHTML(mine.slice(-50)) +
-    historyHTML();
+    historyHTML() +
+    "</div></div>";
   $("#timerPanel").innerHTML = h;
   bindTimer();
 }
@@ -9865,7 +10091,7 @@ const P = { plan: null, ticks: [], ps: [], idx: 0, playing: false, busy: false, 
 const setupCache = new Map();
 function getSetup(si, ci) {
   const k = si + ":" + ci;
-  if (!setupCache.has(k)) setupCache.set(k, buildSetup(STEPS[si].cases[ci].seq));
+  if (!setupCache.has(k)) setupCache.set(k, buildSetup(STEPS[si].cases[ci].seq, stepRest(si)));
   return setupCache.get(k);
 }
 function cancelAll() {
@@ -9880,7 +10106,13 @@ function cancelAll() {
 const tileHTML = (t) =>
   '<span class="tile"><b style="background:' + t.bg + ";color:" + t.fg + '">' + (t.svg || esc(t.t)) + "</b></span>";
 const MYTILE = { bg: "conic-gradient(#ffd500 0 25%,#009b48 0 50%,#c41e3a 0 75%,#0046ad 0)", fg: "#141414", t: "" };
-const mobile = () => window.matchMedia && window.matchMedia("(max-width: 899px)").matches;
+/* the phone layout: narrow screens, except a phone held sideways, which gets the side-by-side layout (its screen is
+   too short for a pinned bottom bar). Must match the @media rules in the stylesheets. */
+const mobile = () =>
+  window.matchMedia &&
+  window.matchMedia(
+    "(max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px)",
+  ).matches;
 function caseThumb(si, ci) {
   const st = STEPS[si],
     c = st.cases[ci],
@@ -9903,10 +10135,11 @@ function buildNav() {
   const nav = $("#steps");
   nav.innerHTML = "";
 
-  navList().forEach((v) => {
+  navItems().forEach((v) => {
     const b = document.createElement("button");
     b.className = "sp";
-    b.addEventListener("click", () => (v === "track" ? switchTrack() : goView(v)));
+    if (v === "steps") b.setAttribute("aria-expanded", "false");
+    b.addEventListener("click", () => (v === "track" ? switchTrack() : v === "steps" ? toggleStepMenu(b) : goView(v)));
     nav.appendChild(b);
   });
   updateNav();
@@ -9976,13 +10209,13 @@ function navLabel(v) {
 }
 function updateNav() {
   const current = view === "quiz" ? "practice" : view,
-    list = navList();
-  document.querySelectorAll(".sp").forEach((b, j) => {
+    list = navItems();
+  document.querySelectorAll("#steps .sp").forEach((b, j) => {
     const v = list[j],
-      l = navLabel(v);
+      l = v === "steps" ? stepsChipLabel() : navLabel(v);
     b.className = l.cls;
     b.innerHTML = l.html;
-    if (v === current) b.setAttribute("aria-current", "step");
+    if (v === current || (v === "steps" && lessonEntries().includes(current))) b.setAttribute("aria-current", "step");
     else b.removeAttribute("aria-current");
   });
   const cur = document.querySelector('.sp[aria-current="step"]');
@@ -10079,6 +10312,112 @@ function layout(mode) {
   $("#paintCtrl").hidden = mode !== "paint";
   $("#practiceCtrl").hidden = mode !== "practice";
   $("#tips").hidden = mode === "quiz";
+}
+
+/* ================= Phone step bar: the lessons folded into one "Step N of M" chip =================
+   On a phone the step bar would otherwise scroll through a dozen chips. The lesson chips become one chip that opens a
+   list of the lessons (each marked learned where it is); everything else stays as it was. */
+const isLessonEntry = (v) => typeof v === "number" || (typeof v === "string" && /^pyr\d$/.test(v));
+function navItems() {
+  const list = navList();
+  if (!mobile()) return list;
+  const out = [];
+  for (const v of list)
+    if (!isLessonEntry(v)) out.push(v);
+    else if (!out.includes("steps")) out.push("steps");
+  return out;
+}
+const lessonEntries = () => navList().filter(isLessonEntry);
+function currentLesson() {
+  const ls = lessonEntries();
+  if (ls.includes(view)) return view;
+  if (ls.includes(store.lastStep)) return store.lastStep;
+  return ls[0];
+}
+function stepsChipLabel() {
+  const ls = lessonEntries(),
+    cur = currentLesson(),
+    l = navLabel(cur),
+    tile = l.html.match(/^<span class="tile"[\s\S]*?<\/span>|^<b[\s\S]*?<\/b>/);
+  return {
+    cls: "sp stepschip",
+    html:
+      (tile ? tile[0] : "") +
+      "<span>" +
+      stepsText(ls, cur) +
+      "</span>" +
+      '<svg class="pzchev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' +
+      '<span class="sr">. Choose a lesson</span>',
+  };
+}
+function toggleStepMenu(btn) {
+  const old = document.querySelector(".stepmenu");
+  if (old) {
+    old.remove();
+    btn.setAttribute("aria-expanded", "false");
+    return;
+  }
+  const menu = document.createElement("div");
+  menu.className = "stepmenu";
+  menu.id = "stepMenu";
+  menu.innerHTML = lessonEntries()
+    .map(
+      (v) =>
+        '<button class="sp' +
+        (v === currentLesson() ? " cur" : "") +
+        '" data-v="' +
+        v +
+        '"' +
+        (v === currentLesson() ? ' aria-current="step"' : "") +
+        ">" +
+        navLabel(v).html +
+        "</button>",
+    )
+    .join("");
+  btn.setAttribute("aria-expanded", "true");
+  btn.setAttribute("aria-controls", "stepMenu");
+  $("#steps").after(menu);
+  menu.querySelectorAll("[data-v]").forEach((b) =>
+    b.addEventListener("click", () => {
+      menu.remove();
+      btn.setAttribute("aria-expanded", "false");
+      const v = b.dataset.v;
+      goView(/^\d+$/.test(v) ? +v : v);
+      topScroll();
+    }),
+  );
+  (menu.querySelector(".cur") || menu.querySelector("button")).focus();
+}
+document.addEventListener("keydown", (e) => {
+  const m = document.querySelector(".stepmenu");
+  if (m && e.key === "Escape") {
+    m.remove();
+    const b = document.querySelector(".stepschip");
+    if (b) b.setAttribute("aria-expanded", "false"), b.focus();
+  }
+});
+document.addEventListener("click", (e) => {
+  const m = document.querySelector(".stepmenu");
+  if (m && !m.contains(e.target) && !e.target.closest(".stepschip")) {
+    m.remove();
+    const b = document.querySelector(".stepschip");
+    if (b) b.setAttribute("aria-expanded", "false");
+  }
+});
+if (window.matchMedia) {
+  const mq = window.matchMedia(
+    "(max-width: 639px), (max-width: 899px) and (orientation: portrait), (max-width: 899px) and (min-height: 521px)",
+  );
+  if (mq.addEventListener) mq.addEventListener("change", () => buildNav());
+}
+
+/* numbered like the tiles: when Basics comes first it is step 0, and is shown by name */
+function stepsText(ls, cur) {
+  const basicsFirst = ls[0] === 0,
+    i = ls.indexOf(cur),
+    n = basicsFirst ? ls.length - 1 : ls.length;
+  if (basicsFirst && i === 0) return "Basics";
+  return "Step " + (basicsFirst ? i : i + 1) + " of " + n;
 }
 
 /* ================= Lesson steps ================= */
@@ -13009,6 +13348,12 @@ sizeUp();
 applyCam();
 initLearn();
 initScanner();
+/* the bottom bar's real height, for anything that has to sit just above it */
+const barHeight = () =>
+  document.documentElement.style.setProperty("--barh", $("#bar").getBoundingClientRect().height + "px");
+barHeight();
+window.addEventListener("resize", barHeight);
+if (window.ResizeObserver) new ResizeObserver(barHeight).observe($("#bar"));
 initWelcome();
 const startSub = subRoute((location.hash || "").slice(1));
 if (!(startSub && startSub())) {

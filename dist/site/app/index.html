@@ -103,6 +103,7 @@ button:focus-visible,
   padding: 12px 16px 40px;
 }
 header {
+  position: relative; /* the settings panel and the phone's menu drop down inside it */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -426,7 +427,7 @@ body {
 .sp[aria-expanded="true"] .pzchev {
   transform: rotate(180deg);
 }
-.sp.puzzle .pzmini {
+.sp .pzmini {
   width: 26px;
   height: 26px;
   flex: none;
@@ -605,23 +606,24 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
-.methodmenu .sp {
+.methodmenu .sp,
+.ctxmenu .sp {
   padding: 8px 12px;
 }
-.methodmenu .mtxt {
+.navmenu .mtxt {
   display: grid;
   gap: 1px;
   text-align: left;
   flex: 1;
 }
-.methodmenu .mtxt b {
+.navmenu .mtxt b {
   font-weight: 600;
 }
-.methodmenu .mtxt small {
+.navmenu .mtxt small {
   color: var(--ink2);
   font-size: 12.5px;
 }
-.methodmenu .ck {
+.navmenu .mtxt ~ .ck {
   width: 18px;
   height: 18px;
   color: var(--accent);
@@ -632,15 +634,6 @@ body {
   :root {
     --tabh: calc(64px + env(safe-area-inset-bottom, 0px));
   }
-  .navbar {
-    margin: 0 -16px;
-    padding: 2px 16px 12px;
-  }
-  .navctx {
-    flex: 1;
-    margin: 0 -16px;
-    padding: 0 16px;
-  }
   .sp {
     padding-right: 12px;
   }
@@ -649,11 +642,6 @@ body {
   }
   .mword {
     display: none;
-  }
-  .navmenu {
-    left: 16px;
-    right: 16px;
-    max-width: none;
   }
   .tabs {
     position: fixed;
@@ -722,6 +710,137 @@ body {
     clip: rect(0 0 0 0);
     white-space: nowrap;
   }
+}
+
+/* ---------- settings panel (the gear) ---------- */
+.iconpill {
+  width: 44px;
+  padding: 0;
+  justify-content: center;
+}
+.setmenu {
+  position: absolute;
+  z-index: 40;
+  right: 0;
+  top: calc(100% - 4px);
+  display: grid;
+  gap: 10px;
+  min-width: 260px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22);
+}
+.setmenu[hidden] {
+  display: none;
+}
+.setrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.setlbl {
+  font-weight: 500;
+}
+
+/* ---------- the phone's one context line, and its menu ---------- */
+.hctx {
+  display: none;
+}
+.mhead {
+  padding: 8px 10px 2px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink2);
+}
+.mhead:first-child {
+  padding-top: 2px;
+}
+.mgo {
+  margin-left: auto;
+  color: var(--accent);
+  font-weight: 500;
+}
+.ctxmenu .pzchev {
+  display: none;
+}
+@media (max-width: 639.98px), (max-width: 899.98px) and (orientation: portrait), (max-width: 899.98px) and (min-height: 521px) {
+  .hctx {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+  }
+  .ctxchip {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .ctxchip .ctxt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .brand {
+    display: none;
+  }
+  body.inlearn .brandrow {
+    display: none;
+  }
+  header {
+    padding-bottom: 12px;
+  }
+  .navbar {
+    margin: 0;
+    padding: 0;
+  }
+  .navctx:empty {
+    display: none;
+  }
+  .navmenu {
+    left: 0;
+    right: 0;
+    top: calc(100% - 6px);
+    max-width: none;
+  }
+  /* between moves the lesson caption keeps to one line */
+  .cap.still:not(.keep) {
+    min-height: 44px;
+  }
+  .cap.still:not(.keep) .t {
+    display: none;
+  }
+  .cap.still:not(.keep) .big {
+    font-size: 20px;
+  }
+}
+.setmenu {
+  max-height: min(80vh, 640px);
+  overflow-y: auto;
+  width: min(380px, calc(100vw - 32px));
+}
+.setmore {
+  display: grid;
+  gap: 10px;
+}
+.sethead {
+  margin-top: 6px;
+  font-weight: 600;
+}
+.sethelp {
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.4;
+}
+.setbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.setmenu .paste {
+  margin: 0;
 }
 .viewer {
   position: relative;
@@ -1135,8 +1254,8 @@ body {
   min-height: 48px;
   margin-top: 22px;
   border-radius: 14px;
-  border: 1.5px dashed var(--ink2);
-  background: transparent;
+  border: 1px solid var(--line);
+  background: var(--panel);
   cursor: pointer;
   font-weight: 500;
   display: flex;
@@ -1722,6 +1841,38 @@ body {
     background: var(--bg);
     box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.18);
   }
+}
+/* the rarely used paint actions wait behind "More" */
+.pmenu {
+  display: block;
+}
+.pmenu[open] {
+  flex-basis: 100%;
+}
+.pmenu > summary {
+  list-style: none;
+}
+.pmenu > summary::-webkit-details-marker {
+  display: none;
+}
+.pmenu > summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin: -3px 0 0 2px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+.pmenu[open] > summary::after {
+  margin-top: 3px;
+  transform: rotate(-135deg);
+}
+.pmenu-in {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
 }
 /* ---------- Phase 2: wide screens (no 3D view), progress, practice, quiz ---------- */
 @media (min-width: 900px), (orientation: landscape) and (min-width: 640px) and (max-height: 520.98px) {
@@ -2343,6 +2494,87 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+/* Progress: everything beyond the current method and set, folded */
+.pmore {
+  margin-top: 22px;
+}
+.pmore > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+.pmore > summary::-webkit-details-marker {
+  display: none;
+}
+.pmore[open] > summary {
+  margin-bottom: 4px;
+}
+/* Practice: one set picker, the set's card (count, drill, quiz), then a compact list */
+.setcard {
+  margin-top: 12px;
+}
+.setcard .qbtns2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.setcard .qbtns2 .ib,
+.setcard .drillBtn {
+  width: auto;
+  margin: 0;
+  padding: 0 18px;
+}
+ul.algs {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+  gap: 8px;
+}
+.algs .alg {
+  align-items: center;
+  padding: 8px 12px 8px 8px;
+  border-radius: 16px;
+}
+.algs .athumb {
+  flex: 0 0 60px;
+}
+.algs .athumb svg {
+  width: 60px;
+}
+.algs .abody h3 {
+  font-size: 16px;
+}
+.algs .astep {
+  margin: 1px 0 3px;
+}
+.algs .alg > .ib {
+  flex: none;
+  width: auto;
+  padding: 0 16px;
+}
+@media (max-width: 639.98px), (max-width: 899.98px) and (orientation: portrait), (max-width: 899.98px) and (min-height: 521px) {
+  .settabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 0 16px 2px;
+    scrollbar-width: none;
+  }
+  .settabs::-webkit-scrollbar {
+    display: none;
+  }
+  .settabs .pill {
+    flex: none;
+  }
+}
 /* ---------- Phase 3: method switch, algorithm sets, timer ---------- */
 .settabs {
   margin: 16px 0 4px;
@@ -2718,6 +2950,37 @@ body.timing .tpad {
   padding-right: 8px;
   white-space: nowrap;
 }
+/* timer options: difficulty, sessions, inspection, screen, folded */
+.tmore {
+  margin-top: 12px;
+}
+.tmore > summary {
+  list-style: none;
+  display: inline-flex;
+}
+.tmore > summary::-webkit-details-marker {
+  display: none;
+}
+.tmore-in {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.tmore-in .seg2,
+.tmore-in .tsetting,
+.tmore-in .sessbar {
+  margin: 0;
+}
+.tfirst {
+  margin-top: 0;
+}
+body.timing .tmore {
+  visibility: hidden;
+}
 /* ---------- Camera scanner ---------- */
 .scanbtn {
   width: auto;
@@ -2891,10 +3154,6 @@ body.timing .tpad {
   margin: 0;
   color: var(--ink2);
   line-height: 1.45;
-  font-size: 14px;
-}
-.pztag {
-  color: var(--ink2);
   font-size: 14px;
 }
 .pzbadge {
@@ -3444,6 +3703,7 @@ body.timing .tpad {
           </div>
           <div class="brand">Cube Tutor</div>
         </div>
+        <div class="hctx" id="hctx"></div>
         <div class="headRight">
           <button class="pill" id="whereBtn" aria-label="Where am I?">
             <svg
@@ -3460,42 +3720,64 @@ body.timing .tpad {
               <path d="M12 17h.01" /></svg
             ><span class="wtxt">Where am I?</span>
           </button>
-          <div class="theme-switch" role="group" aria-label="Theme">
-            <button class="themeOpt" data-t="light" aria-label="Light theme" aria-pressed="false">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="4.2" />
-                <path
-                  d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.55 1.55M18.25 18.25l1.55 1.55M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.55-1.55M18.25 5.75l1.55-1.55"
-                />
-              </svg>
-            </button>
-            <button class="themeOpt" data-t="system" aria-label="Match system theme" aria-pressed="true">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="3" y="4.5" width="18" height="12" rx="2" />
-                <path d="M8 20h8M12 16.5V20" />
-              </svg>
-            </button>
-            <button class="themeOpt" data-t="dark" aria-label="Dark theme" aria-pressed="false">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M20.3 14.9a8.3 8.3 0 0 1-10.2-10.2 8.3 8.3 0 1 0 10.2 10.2z" />
-              </svg>
-            </button>
+          <button class="pill iconpill" id="setBtn" aria-label="Settings" aria-expanded="false" aria-controls="setMenu">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="setmenu" id="setMenu" role="group" aria-label="Settings" hidden>
+          <div class="setrow">
+            <span class="setlbl">Theme</span>
+            <div class="theme-switch" role="group" aria-label="Theme">
+              <button class="themeOpt" data-t="light" aria-label="Light theme" aria-pressed="false">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="4.2" />
+                  <path
+                    d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.55 1.55M18.25 18.25l1.55 1.55M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.55-1.55M18.25 5.75l1.55-1.55"
+                  />
+                </svg>
+              </button>
+              <button class="themeOpt" data-t="system" aria-label="Match system theme" aria-pressed="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="4.5" width="18" height="12" rx="2" />
+                  <path d="M8 20h8M12 16.5V20" />
+                </svg>
+              </button>
+              <button class="themeOpt" data-t="dark" aria-label="Dark theme" aria-pressed="false">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M20.3 14.9a8.3 8.3 0 0 1-10.2-10.2 8.3 8.3 0 1 0 10.2 10.2z" />
+                </svg>
+              </button>
+            </div>
           </div>
+          <div class="setmore" id="setMore"></div>
         </div>
       </header>
       <nav class="navbar" id="navbar" aria-label="Main">
@@ -3521,7 +3803,9 @@ body.timing .tpad {
               <button class="pill" id="gripBtn" aria-pressed="false">Grip</button>
               <button class="pill" id="holdBtn">Reset view</button>
               <button class="pill" id="underBtn">Underneath</button>
-              <button class="pill" id="lettersBtn" aria-pressed="false" aria-label="Letters on stickers">Aa</button>
+              <button class="pill" id="lettersBtn" aria-pressed="false" aria-label="Letters on stickers">
+                Letters
+              </button>
             </div>
           </div>
           <div class="bar" id="bar">
@@ -3603,25 +3887,22 @@ body.timing .tpad {
               of them is probably the wrong color.
             </p>
             <div class="palette" id="palette" aria-label="Colors"></div>
-            <div class="method" role="group" aria-label="Solve with">
-              <span class="lbl">Give me moves for</span>
-              <button class="pill methodBtn" data-m="beginner" aria-pressed="true">Beginner method</button
-              ><button class="pill methodBtn" data-m="cfop" aria-pressed="false">Speed method (CFOP)</button
-              ><button class="pill methodBtn" data-m="roux" aria-pressed="false">Roux method</button>
-              <span class="llset" hidden
-                ><button class="pill llBtn" data-ll="2look" aria-pressed="true">2-look last layer</button
-                ><button class="pill llBtn" data-ll="full" aria-pressed="false">Full OLL and PLL</button></span
-              >
-            </div>
             <div class="pactions">
-              <button class="pill" id="undoPaintBtn">Undo</button><button class="pill" id="redoPaintBtn">Redo</button
-              ><button class="pill" id="fillBtn"></button><button class="pill" id="clearFaceBtn">Clear this side</button
-              ><button class="pill" id="clearAllBtn">Start over</button>
+              <button class="pill" id="undoPaintBtn">Undo</button><button class="pill" id="redoPaintBtn">Redo</button>
+              <details class="pmenu">
+                <summary class="pill">More</summary>
+                <div class="pmenu-in">
+                  <button class="pill" id="fillBtn"></button
+                  ><button class="pill" id="clearFaceBtn">Clear this side</button
+                  ><button class="pill" id="clearAllBtn">Start over</button>
+                </div>
+              </details>
             </div>
             <div class="perr" id="perr" role="alert" hidden></div>
           </div>
           <div id="progressPanel" hidden></div>
           <div id="puzzlesPanel" hidden></div>
+          <div id="notePanel" hidden></div>
           <div id="pyrPanel" hidden></div>
           <div id="fourPanel" hidden></div>
           <div id="algsPanel" hidden></div>
@@ -9581,14 +9862,23 @@ function startTimeTracking() {
 function isWatched(si, ci) {
   return (store.watched[STEPS[si].id] || []).includes(ci);
 }
+/* Watching the last unwatched case of a step marks the step learned (as on the Pyraminx). Returns true when it just did.
+   Unmarking it by hand sticks: rewatching cases you've already seen doesn't mark it again. */
 function markWatched(si, ci) {
   const id = STEPS[si].id,
     w = new Set(store.watched[id] || []);
-  if (w.has(ci)) return;
+  if (w.has(ci)) return false;
   w.add(ci);
   store.watched[id] = [...w].sort((a, b) => a - b);
+  const learned = allWatched(si) && !store.done[id];
+  if (learned) store.done[id] = true;
   save();
   if (view === si) refreshCaseBadges();
+  if (learned) {
+    updateNav();
+    syncLearnBtn();
+  }
+  return learned;
 }
 function allWatched(si) {
   return STEPS[si].cases.every((_, ci) => isWatched(si, ci));
@@ -9726,7 +10016,12 @@ function casePlan(si, ci) {
   };
 }
 
-/* ================= Progress screen ================= */
+/* ================= Progress screen =================
+   What you're working on first: the method you're on and its algorithm set, and only the numbers you've started (a
+   streak shows from day 1, a best time after your first solve). Everything else waits behind "Show all". */
+/* the algorithm set that goes with the method you're on (Practice opens on the same one) */
+const methodSet = () => (store.puzzle === "222" ? "two" : { speed: "oll", roux: "cmll" }[store.track] || "beginner");
+const setName = (id) => (ALG_SETS.find((x) => x.id === id) || {}).name || DRILL_SETS[id] || id;
 function openProgress() {
   enterWideView("progress", PROGTILE, "Your progress");
   layout("progress");
@@ -9743,7 +10038,11 @@ function openProgress() {
   if (fresh)
     h +=
       "<div><b>Welcome.</b> Start with the basics: how to hold the cube and what the move letters mean.</div>" +
-      '<button class="ib main" data-go="0">Start with Basics</button>';
+      '<button class="ib main" data-go="' +
+      order[0] +
+      '">Start with ' +
+      esc(STEPS[order[0]].short) +
+      "</button>";
   else
     h +=
       "<div><b>Pick up where you left off.</b>" +
@@ -9764,29 +10063,32 @@ function openProgress() {
     "</div>" +
     (sub ? '<div class="ss">' + sub + "</div>" : "") +
     "</div>";
-  const learnedIn = (set) => ALGS.filter((a) => inSet(a, set) && isLearned(store.practice[a.id])).length;
+  const method = (methodList().find((m) => m.id === methodNow()) || methodList()[0]).name,
+    mySteps = order.filter((i) => STEPS[i].cases),
+    myLearned = mySteps.filter((i) => store.done[STEPS[i].id]).length,
+    set = methodSet(),
+    inMySet = ALGS.filter((a) => inSet(a, set)),
+    setLearned = inMySet.filter((a) => isLearned(store.practice[a.id])).length;
   h +=
     '<div class="stats">' +
-    stat("Steps learned", s.stepsLearned + "<small> of " + s.stepsTotal + "</small>", "Both methods") +
+    stat(method + " steps learned", myLearned + "<small> of " + mySteps.length + "</small>") +
     stat(
-      "Algorithms learned",
-      s.algsLearned + "<small> of " + s.algsTotal + "</small>",
-      ALG_SETS.map((x) => x.name + " " + learnedIn(x.id)).join(", "),
+      setName(set) + " algorithms learned",
+      setLearned + "<small> of " + inMySet.length + "</small>",
+      s.algsLearned > setLearned ? s.algsLearned + " across every set" : "",
     ) +
-    stat("Day streak", s.streak, s.streak ? "Keep it going" : "Practice today to start one") +
-    stat("Practice time", s.minutes + "<small> min</small>") +
-    stat(
-      "Quiz accuracy",
-      s.accuracy === null ? "–" : s.accuracy + "<small>%</small>",
-      s.accuracy === null ? "No quiz yet" : "Last " + Math.min(50, s.answered) + " answers",
-    ) +
-    stat("Best quiz", s.bestQuiz === null ? "–" : s.bestQuiz + "<small> of 10</small>") +
-    stat(
-      "Best 3×3 solve",
-      fmt(tsum.best),
-      tsum.count ? tsum.count + " timed solve" + (tsum.count > 1 ? "s" : "") : "Try the timer",
-    ) +
-    stat("Best average of 5", fmt(tsum.bestAo5), tsum.ao5 !== null ? "Current: " + fmt(tsum.ao5) : "Needs 5 solves") +
+    (s.streak ? stat("Day streak", s.streak, "Keep it going") : "") +
+    (s.minutes ? stat("Practice time", s.minutes + "<small> min</small>") : "") +
+    (s.accuracy !== null
+      ? stat("Quiz accuracy", s.accuracy + "<small>%</small>", "Last " + Math.min(50, s.answered) + " answers") +
+        (s.bestQuiz !== null ? stat("Best quiz", s.bestQuiz + "<small> of 10</small>") : "")
+      : "") +
+    (tsum.count
+      ? stat("Best 3×3 solve", fmt(tsum.best), tsum.count + " timed solve" + (tsum.count > 1 ? "s" : "")) +
+        (tsum.bestAo5 !== null
+          ? stat("Best average of 5", fmt(tsum.bestAo5), tsum.ao5 !== null ? "Current: " + fmt(tsum.ao5) : "")
+          : "")
+      : "") +
     "</div>";
   const stepRow = (i) => {
     const st = STEPS[i],
@@ -9810,26 +10112,18 @@ function openProgress() {
       "</button></li>"
     );
   };
-  for (const [track, label] of [
-    ["beginner", "Beginner method"],
-    ["speed", "Speed method (CFOP)"],
-    ["roux", "Roux method"],
-  ]) {
-    h +=
-      "<h2>" +
-      label +
-      '</h2><ol class="plist">' +
-      TRACKS[track]
-        .filter((i) => STEPS[i].cases && (track === "beginner" || STEPS[i].track))
-        .map(stepRow)
-        .join("") +
-      "</ol>";
-  }
-  for (const set of ALG_SETS) {
-    h += "<h2>" + esc(set.name) + ' algorithms</h2><div class="achips">';
-    ALGS.filter((a) => inSet(a, set.id)).forEach((a) => {
+  const stepList = (track) =>
+    '<ol class="plist">' +
+    TRACKS[track]
+      .filter((i) => STEPS[i].cases && (track === "beginner" || STEPS[i].track))
+      .map(stepRow)
+      .join("") +
+    "</ol>";
+  const chips = (id) => {
+    let c = '<div class="achips">';
+    ALGS.filter((a) => inSet(a, id)).forEach((a) => {
       const st = algStatus(a);
-      h +=
+      c +=
         '<button class="achip ' +
         st.cls +
         '" data-alg="' +
@@ -9841,26 +10135,32 @@ function openProgress() {
         esc(st.text) +
         "</span></button>";
     });
-    h += "</div>";
-  }
+    return c + "</div>";
+  };
+  h += "<h2>" + esc(method) + "</h2>" + stepList(curTrack());
+  h += "<h2>" + esc(setName(set)) + " algorithms</h2>" + chips(set);
+  /* the rest: other methods, other sets */
+  const otherTracks = (
+    store.puzzle === "222"
+      ? [
+          ["two", "2×2 beginner method"],
+          ["twospeed", "2×2 speed method"],
+          ["ortega", "2×2 Ortega method"],
+        ]
+      : [
+          ["beginner", "Beginner method"],
+          ["speed", "Speed method (CFOP)"],
+          ["roux", "Roux method"],
+        ]
+  ).filter(([t]) => t !== curTrack());
+  const otherSets = [...ALG_SETS.map((x) => x.id), ...TWO_SETS].filter(
+    (id) => id !== set && ALGS.some((a) => inSet(a, id)),
+  );
   h +=
-    "<h2>Keyboard</h2>" +
-    '<div class="pactions"><button class="pill" id="keysBtn" aria-pressed="' +
-    String(store.keys !== false) +
-    '">Single-key shortcuts: ' +
-    (store.keys !== false ? "on" : "off") +
-    "</button></div>" +
-    '<p class="goal">Letters turn the cube in practice and drills, and numbers pick colors and quiz answers. Turn this off if you use speech input or a screen reader that sends single keys.</p>' +
-    "<h2>Your data</h2>" +
-    '<div class="pactions">' +
-    '<button class="pill" id="backupBtn">Download a backup</button>' +
-    '<button class="pill" id="restoreBtn">Restore from a backup</button>' +
-    '<button class="pill" id="csvBtn">Download solve times (spreadsheet)</button>' +
-    "</div>" +
-    '<details class="paste"><summary>Paste a backup instead</summary><textarea id="pasteBackup" rows="4" aria-label="Backup text"></textarea><button class="pill" id="pasteRestore">Restore from this text</button></details>' +
-    '<input type="file" id="restoreFile" accept=".json,application/json" hidden>' +
-    '<div class="perr info" id="dataNote" hidden></div>' +
-    '<div class="pactions"><button class="pill" id="welcomeAgain">Show the welcome again</button><button class="pill danger" id="resetProgress">Reset progress</button></div>';
+    '<details class="pmore"><summary>Show all methods and algorithm sets</summary>' +
+    otherTracks.map(([t, label]) => "<h2>" + label + "</h2>" + stepList(t)).join("") +
+    otherSets.map((id) => "<h2>" + esc(setName(id)) + " algorithms</h2>" + chips(id)).join("") +
+    "</details>";
   $("#progressPanel").innerHTML = h;
   $("#progressPanel")
     .querySelectorAll("[data-go]")
@@ -9868,6 +10168,39 @@ function openProgress() {
   $("#progressPanel")
     .querySelectorAll("[data-alg]")
     .forEach((b) => b.addEventListener("click", () => goHash("practice-" + b.dataset.alg)));
+  renderTips(
+    [
+      "A day counts toward your streak when you play a lesson, practice an algorithm, answer a quiz question, or time a solve.",
+      "A step counts as learned once you’ve watched every case in it; an algorithm, after three clean runs from memory.",
+      "Your progress is saved on this device. Back it up from the settings (the gear at the top).",
+    ],
+    "#ffffff",
+    false,
+  );
+}
+
+/* ================= Settings panel (the gear): theme, keyboard, your data =================
+   Set once, rarely changed, so they live here rather than on a screen. The theme switch is in the page markup; the rest
+   is built at start-up. */
+function renderSettings() {
+  const box = $("#setMore");
+  box.innerHTML =
+    '<div class="setrow"><span class="setlbl" id="keysLbl">Single-key shortcuts</span><button class="pill" id="keysBtn" aria-labelledby="keysLbl" aria-describedby="keysHelp" aria-pressed="' +
+    String(store.keys !== false) +
+    '">' +
+    (store.keys !== false ? "On" : "Off") +
+    "</button></div>" +
+    '<p class="sethelp" id="keysHelp">Letters turn the cube in practice and drills; numbers pick colors and quiz answers. Turn off if you use speech input or a screen reader that sends single keys.</p>' +
+    '<div class="sethead">Your data</div>' +
+    '<div class="setbtns">' +
+    '<button class="pill" id="backupBtn">Download a backup</button>' +
+    '<button class="pill" id="restoreBtn">Restore from a backup</button>' +
+    '<button class="pill" id="csvBtn">Download solve times (spreadsheet)</button>' +
+    "</div>" +
+    '<details class="paste"><summary>Paste a backup instead</summary><textarea id="pasteBackup" rows="4" aria-label="Backup text"></textarea><button class="pill" id="pasteRestore">Restore from this text</button></details>' +
+    '<input type="file" id="restoreFile" accept=".json,application/json" hidden>' +
+    '<div class="perr info" id="setNote" hidden></div>' +
+    '<div class="setbtns"><button class="pill" id="welcomeAgain">Show the welcome again</button><button class="pill danger" id="resetProgress">Reset progress</button></div>';
   $("#backupBtn").addEventListener("click", exportBackup);
   $("#csvBtn").addEventListener("click", exportSolves);
   $("#restoreBtn").addEventListener("click", () => $("#restoreFile").click());
@@ -9877,13 +10210,16 @@ function openProgress() {
     if (f) f.text().then(restoreFromText);
   });
   $("#pasteRestore").addEventListener("click", () => restoreFromText($("#pasteBackup").value));
-  $("#welcomeAgain").addEventListener("click", openWelcome);
+  $("#welcomeAgain").addEventListener("click", () => {
+    showSettings(false);
+    openWelcome();
+  });
   $("#keysBtn").addEventListener("click", (e) => {
     store.keys = store.keys === false;
     save();
     const b = e.currentTarget;
     b.setAttribute("aria-pressed", String(store.keys));
-    b.textContent = "Single-key shortcuts: " + (store.keys ? "on" : "off");
+    b.textContent = store.keys ? "On" : "Off";
     $("#live").textContent = "Single-key shortcuts " + (store.keys ? "on." : "off.");
   });
   let arm = 0;
@@ -9906,19 +10242,11 @@ function openProgress() {
       timer: Object.assign({}, store.timer, { sessions: [{ id: "main", name: "Main" }], current: "main" }),
     });
     save();
-    updateNav();
-    openProgress();
+    buildNav();
+    showView(view);
+    b.textContent = "Reset progress";
     $("#live").textContent = "Progress reset.";
   });
-  renderTips(
-    [
-      "A day counts toward your streak when you play a lesson, practice an algorithm, answer a quiz question, or time a solve.",
-      "An algorithm counts as learned after three clean runs from memory.",
-      "Your progress is saved on this device.",
-    ],
-    "#ffffff",
-    false,
-  );
 }
 
 /* ================= Practice: algorithm library ================= */
@@ -9930,36 +10258,12 @@ function openPracticeList() {
   layout("algs");
   if (store.puzzle === "222") pset = TWO_SETS.includes(pset) ? pset : "two";
   else if (!pset || TWO_SETS.includes(pset)) pset = { speed: "oll", roux: "cmll" }[store.track] || "beginner";
-  const list = ALGS.filter((a) => inSet(a, pset)).sort((x, y) => (["ollfull", "coll", "cll", "cmll"].includes(pset) ? x.n - y.n : 0));
+  const list = ALGS.filter((a) => inSet(a, pset)).sort((x, y) =>
+    ["ollfull", "coll", "cll", "cmll"].includes(pset) ? x.n - y.n : 0,
+  );
   const learned = list.filter((a) => isLearned(store.practice[a.id])).length;
-  const two = store.puzzle === "222";
-  let h = two
-    ? '<div class="pcard lead"><div><b>Quiz yourself.</b> Name the 2×2 case from its picture: the seven yellow-top cases and the last corners, or all 42 CLL cases.</div><div class="qbtns2"><button class="ib txt" data-quiz="two">2×2 quiz</button><button class="ib txt" data-quiz="cll">CLL quiz</button></div></div>'
-    : '<div class="pcard lead"><div><b>Quiz yourself.</b> Ten quick questions on recognizing cases, picking algorithms and reading moves. Pick a set:' +
-      (Object.keys(store.quiz.bestBy).length
-        ? " Your bests: " +
-          Object.entries(store.quiz.bestBy)
-            .map(
-              ([k, n]) =>
-                ({
-                  beginner: "Beginner",
-                  oll: "2-look OLL",
-                  ollfull: "Full OLL",
-                  pll: "PLL",
-                  pll2side: "PLL from two sides",
-                  f2l: "F2L",
-                  coll: "COLL",
-                  cmll: "CMLL",
-                  cll: "2×2 CLL",
-                })[k] +
-                " " +
-                n,
-            )
-            .join(", ") +
-          "."
-        : "") +
-      '</div><div class="qsets"><button class="ib main" data-quiz="beginner">Beginner</button><button class="ib txt" data-quiz="oll">2-look OLL</button><button class="ib txt" data-quiz="ollfull">Full OLL</button><button class="ib txt" data-quiz="f2l">F2L</button><button class="ib txt" data-quiz="pll2side">PLL from two sides</button><button class="ib txt" data-quiz="pll">PLL</button><button class="ib txt" data-quiz="coll">COLL</button><button class="ib txt" data-quiz="cmll">CMLL</button></div></div>';
-  h +=
+  /* one picker for the set; the set's own card says how far along you are and offers its drill and quiz */
+  let h =
     '<div class="seg2 settabs" role="group" aria-label="Algorithm set">' +
     (store.puzzle === "222"
       ? [
@@ -9967,7 +10271,8 @@ function openPracticeList() {
           { id: "cll", name: "CLL" },
           { id: "pbl", name: "PBL" },
         ]
-      : ALG_SETS)
+      : ALG_SETS
+    )
       .map(
         (s) =>
           '<button class="pill" data-set="' +
@@ -9982,23 +10287,29 @@ function openPracticeList() {
       )
       .join("") +
     "</div>";
+  const quiz = QUIZ_SETS.includes(pset) ? pset : null,
+    best = quiz && store.quiz.bestBy[quiz];
   h +=
-    '<p class="goal">' +
+    '<div class="pcard lead setcard"><div><b>' +
     learned +
     " of " +
     list.length +
-    " learned. Practice with hints first, then from memory. Three clean runs from memory and it’s learned." +
+    " learned.</b> Practice each with hints, then from memory: three clean runs from memory and it’s learned." +
     (pset === "pll" ? " The six marked “2-look” are all you need to start." : "") +
-    "</p>" +
-    (DRILL_SETS[pset]
-      ? '<button class="ib main drillBtn" id="drillBtn">Drill random ' + esc(DRILL_SETS[pset]) + " cases</button>"
-      : "");
-  h += '<div class="algs">';
+    (best !== undefined && best !== null && best !== false ? " Best quiz: " + best + " of 10." : "") +
+    '</div><div class="qbtns2">' +
+    (DRILL_SETS[pset] ? '<button class="ib main drillBtn" id="drillBtn">Drill random cases</button>' : "") +
+    (quiz
+      ? '<button class="ib ' + (DRILL_SETS[pset] ? "txt" : "main") + '" data-quiz="' + quiz + '">Quiz me</button>'
+      : "") +
+    (pset === "pll" ? '<button class="ib txt" data-quiz="pll2side">Quiz: PLL from two sides</button>' : "") +
+    "</div></div>";
+  h += '<ul class="algs">';
   list.forEach((a) => {
     const st = algStatus(a),
       s = store.practice[a.id];
     h +=
-      '<article class="alg"><div class="athumb">' +
+      '<li class="alg"><div class="athumb">' +
       algThumb(a) +
       "</div>" +
       '<div class="abody"><h3>' +
@@ -10008,26 +10319,23 @@ function openPracticeList() {
       '<div class="astep">' +
       esc(algPlace(a)) +
       "</div>" +
-      chipsHTML(a.moves.split(" ")) +
-      (a.times ? '<span class="reps">Repeat ' + a.times + "×</span>" : "") +
-      '<p class="awhat">' +
-      esc(a.what) +
-      "</p>" +
       '<div class="astatus ' +
       st.cls +
       '">' +
       (st.cls === "ok" ? ICON.check : "") +
       esc(st.text) +
       (s && s.best ? ", best " + (s.best / 1000).toFixed(1) + " s" : "") +
-      "</div>" +
-      '<div class="abtns"><button class="ib main" data-practice="' +
+      "</div></div>" +
+      '<button class="ib txt" data-practice="' +
       a.id +
-      '">Practice</button><button class="ib txt" data-watch="' +
-      a.id +
-      '">Watch</button></div></div></article>';
+      '" aria-label="Practice ' +
+      esc(a.name) +
+      '">Practice</button></li>';
   });
-  h += "</div>";
+  h += "</ul>";
   $("#algsPanel").innerHTML = h;
+  const onSet = $("#algsPanel").querySelector('.settabs [aria-pressed="true"]');
+  if (onSet && onSet.scrollIntoView) onSet.scrollIntoView({ block: "nearest", inline: "center" });
   if ($("#drillBtn")) $("#drillBtn").addEventListener("click", () => goHash("drill-" + pset));
   $("#algsPanel")
     .querySelectorAll("[data-quiz]")
@@ -10043,12 +10351,9 @@ function openPracticeList() {
   $("#algsPanel")
     .querySelectorAll("[data-practice]")
     .forEach((b) => b.addEventListener("click", () => goHash("practice-" + b.dataset.practice)));
-  $("#algsPanel")
-    .querySelectorAll("[data-watch]")
-    .forEach((b) => b.addEventListener("click", () => goHash("watch-" + b.dataset.watch)));
   renderTips(
     [
-      "On a keyboard, type the face letter for a move (r for R) and hold Shift for prime (Shift+R for R′). M, E and S work the same way; x, y and z turn the whole cube. You can turn these shortcuts off in Progress.",
+      "On a keyboard, type the face letter for a move (r for R) and hold Shift for prime (Shift+R for R′). M, E and S work the same way; x, y and z turn the whole cube. You can turn these shortcuts off in the settings (the gear).",
       "A half turn like U2 can be entered as two quarter turns the same way.",
       "Wrong moves are undone for you, so the cube always matches the algorithm.",
     ],
@@ -10151,9 +10456,10 @@ function openAlgPractice(a, mode) {
       (mode === "hints") +
       '">With hints</button><button class="pill" data-mode="memory" aria-pressed="' +
       (mode === "memory") +
-      '">From memory</button></div>',
+      '">From memory</button></div><button class="pill" id="watchThis">Watch it first</button>',
   );
   bindAlgInfo();
+  $("#watchThis").addEventListener("click", () => goHash("watch-" + a.id));
   $("#algDetail")
     .querySelectorAll("[data-mode]")
     .forEach((b) => b.addEventListener("click", () => openAlgPractice(a, b.dataset.mode)));
@@ -11096,7 +11402,6 @@ function renderTimer() {
       ? '<button class="pill" id="showScr" aria-label="Show me on the cube">Show me</button><button class="pill" id="solveScr" aria-label="Solve it with the app">Solve it</button>'
       : "") +
     "</div>" +
-    (USES_PRESETS.has(puz) ? presetButtons() : "") +
     "</div>" +
     '<div class="tpad" id="tpad" role="button" tabindex="0" aria-describedby="tstatus">' +
     '<div class="tdisplay" id="tdisplay">' +
@@ -11105,31 +11410,40 @@ function renderTimer() {
     '<div class="tstatus" id="tstatus">' +
     idleHint() +
     "</div></div>" +
+    /* set-once things (difficulty, sessions, inspection, screen) wait behind one fold, open if you left it open */
+    '<details class="tmore"' +
+    (TM.moreOpen ? " open" : "") +
+    '><summary class="pill">Timer options</summary><div class="tmore-in">' +
+    (USES_PRESETS.has(puz) ? presetButtons() : "") +
+    sessionBar() +
     '<div class="tsetting"><button class="pill" id="inspectBtn" aria-pressed="' +
     store.timer.inspect +
     '">15-second inspection</button>' +
     (navigator.wakeLock
       ? '<button class="pill" id="awakeBtn" aria-pressed="' + store.timer.awake + '">Keep the screen on</button>'
       : "") +
-    "</div>" +
+    "</div></div></details>" +
     '<div class="sr" id="tlive" aria-live="assertive"></div>' +
     '</div><div class="tside">' +
-    sessionBar() +
-    '<div class="stats tstats">' +
-    tstat("Best", fmt(sum.best)) +
-    tstat("Average of 5", fmt(sum.ao5)) +
-    tstat("Average of 12", fmt(sum.ao12)) +
-    tstat("Average of 50", fmt(averageOf(mine, 50))) +
-    tstat("Average of 100", fmt(averageOf(mine, 100))) +
-    tstat("Best average of 5", fmt(sum.bestAo5)) +
-    tstat("Best average of 12", fmt(sum.bestAo12)) +
-    tstat("Mean", fmt(sum.mean)) +
-    tstat("Solves", String(sum.count)) +
-    "</div>" +
-    chartHTML(mine.slice(-50)) +
-    historyHTML() +
+    /* each number appears once it can exist: best and mean after one solve, averages once there are enough */
+    (sum.count
+      ? '<div class="stats tstats">' +
+        tstat("Solves", String(sum.count)) +
+        tstat("Best", fmt(sum.best)) +
+        tstat("Mean", fmt(sum.mean)) +
+        (sum.count >= 5 ? tstat("Average of 5", fmt(sum.ao5)) + tstat("Best average of 5", fmt(sum.bestAo5)) : "") +
+        (sum.count >= 12
+          ? tstat("Average of 12", fmt(sum.ao12)) + tstat("Best average of 12", fmt(sum.bestAo12))
+          : "") +
+        (sum.count >= 50 ? tstat("Average of 50", fmt(averageOf(mine, 50))) : "") +
+        (sum.count >= 100 ? tstat("Average of 100", fmt(averageOf(mine, 100))) : "") +
+        "</div>" +
+        chartHTML(mine.slice(-50)) +
+        historyHTML()
+      : '<p class="goal tfirst">Your best time and averages show up here as you solve. Average of 5 comes after five solves.</p>') +
     "</div></div>";
   $("#timerPanel").innerHTML = h;
+  $("#timerPanel .tmore").addEventListener("toggle", (e) => (TM.moreOpen = e.currentTarget.open));
   bindTimer();
 }
 const tstat = (label, value) =>
@@ -11610,7 +11924,9 @@ function openTwoSolution(scr, way = "shortest") {
     mini: null,
     where: "Scrambled with the timer’s scramble, yellow on top and green facing you.",
     hlnote: "",
-    done: cll ? "Solved the CLL way, in " + cllMoves + " moves." : "Solved in " + sol.length + " moves, the fewest possible.",
+    done: cll
+      ? "Solved the CLL way, in " + cllMoves + " moves."
+      : "Solved in " + sol.length + " moves, the fewest possible.",
     byRow: false,
   });
 }
@@ -12119,16 +12435,26 @@ const ctxItems = () => [
   ...(store.puzzle === "333" || store.puzzle === "222" ? ["track"] : []),
   ...(foldLessons() && lessonEntries().length ? ["steps"] : []),
 ];
-const tabItems = () =>
-  store.puzzle === "pyr"
-    ? ["learn", "pyrprac", "timer"]
-    : store.puzzle === "four"
-      ? ["learn", "timer"]
-      : store.puzzle === "222"
-        ? ["learn", "practice", "timer", "progress"]
-        : ["learn", "mycube", "practice", "timer", "progress"];
+/* The same five tabs for every puzzle, so the bar never moves under your thumb. A tab with nothing for this puzzle yet
+   opens a short note saying so, with a way on (see NOTES). */
+const tabItems = () => ["learn", "mycube", "practice", "timer", "progress"];
+function tabTarget(v) {
+  const p = store.puzzle;
+  if (v === "learn") return learnTarget();
+  if (v === "mycube") return p === "333" ? "mycube" : "namycube";
+  if (v === "practice") return p === "pyr" ? "pyrprac" : p === "four" ? "napractice" : "practice";
+  if (v === "progress") return p === "pyr" || p === "four" ? "naprogress" : "progress";
+  return v;
+}
 /* which tab a screen belongs to */
-const sectionOf = (v) => (v === "quiz" ? "practice" : isLessonEntry(v) || v === "four" ? "learn" : v);
+const SECTION = {
+  quiz: "practice",
+  pyrprac: "practice",
+  namycube: "mycube",
+  napractice: "practice",
+  naprogress: "progress",
+};
+const sectionOf = (v) => SECTION[v] || (isLessonEntry(v) || v === "four" ? "learn" : v);
 /* the Pyraminx lesson last open, so Learn goes back to it (the cubes keep theirs in store.lastStep) */
 let lastPyr = "pyr0";
 function currentLesson() {
@@ -12145,17 +12471,19 @@ function fillNav(box, items, onClick) {
   items.forEach((v) => {
     const b = document.createElement("button");
     b.navV = v;
-    if (v === "track" || v === "steps") b.setAttribute("aria-expanded", "false");
+    if (v === "track" || v === "steps" || v === "ctx") b.setAttribute("aria-expanded", "false");
     b.addEventListener("click", () => onClick(v, b));
     box.appendChild(b);
   });
 }
 function buildNav() {
   closeNavMenu();
-  fillNav($("#navctx"), ctxItems(), (v, b) =>
+  /* on a phone the puzzle, method and lesson share one line in the header; elsewhere they're chips beside the tabs */
+  fillNav($("#hctx"), mobile() ? ["ctx"] : [], (v, b) => (ctxMenuOn() ? toggleCtxMenu(b) : goView("puzzles")));
+  fillNav($("#navctx"), mobile() ? [] : ctxItems(), (v, b) =>
     v === "track" ? toggleMethodMenu(b) : v === "steps" ? toggleStepMenu(b) : goView(v),
   );
-  fillNav($("#tabs"), tabItems(), (v) => goView(v === "learn" ? learnTarget() : v));
+  fillNav($("#tabs"), tabItems(), (v) => goView(tabTarget(v)));
   const ind = document.createElement("span");
   ind.className = "tabind";
   ind.setAttribute("aria-hidden", "true");
@@ -12256,11 +12584,9 @@ const TABS = {
       '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
     ),
   },
-  pyrprac: { name: "Practice", icon: "" },
   timer: { name: "Timer", icon: tabIcon('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 3h5"/>') },
   progress: { name: "Progress", icon: tabIcon('<path d="M5 20v-6M12 20V5M19 20v-9"/>') },
 };
-TABS.pyrprac.icon = TABS.practice.icon;
 const doneMark = (id) =>
   store.done[id] ? ICON.check.replace("<svg", '<svg class="ck"') + '<span class="sr">, learned</span>' : "";
 function navLabel(v) {
@@ -12300,6 +12626,7 @@ function navLabel(v) {
     };
   }
   if (v === "steps") return stepsChipLabel();
+  if (v === "ctx") return ctxChipLabel();
   if (TABS[v]) return { cls: "tab", html: TABS[v].icon + '<span class="tl">' + TABS[v].name + "</span>" };
   if (typeof v === "string" && /^pyr\d$/.test(v)) {
     const st = PYR_STEPS[+v[3]];
@@ -12322,7 +12649,8 @@ function updateNav() {
   const section = sectionOf(view);
   /* the current item: a tab is the page you're on (aria-current="page"), a lesson is a step in the method */
   const mark = (b, on, kind) => (on ? b.setAttribute("aria-current", kind) : b.removeAttribute("aria-current"));
-  document.querySelectorAll("#navctx > button, #tabs > button, #steps > button").forEach((b) => {
+  document.body.classList.toggle("inlearn", section === "learn");
+  document.querySelectorAll("#hctx > button, #navctx > button, #tabs > button, #steps > button").forEach((b) => {
     const v = b.navV,
       l = navLabel(v);
     b.className = l.cls + (l.done ? " done" : "");
@@ -12330,11 +12658,18 @@ function updateNav() {
     if (v === "puzzles") mark(b, view === "puzzles", "page");
     else if (v === "steps") mark(b, section === "learn", "step");
     else if (v === "track") b.removeAttribute("aria-current");
-    else if (TABS[v]) {
+    else if (v === "ctx") {
+      mark(b, view === "puzzles", "page");
+      if (ctxMenuOn()) b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") || "false");
+      else b.removeAttribute("aria-expanded");
+    } else if (TABS[v]) {
       mark(b, section === v, "page");
       b.title = TABS[v].name; /* a tooltip where only the icon shows */
     } else mark(b, v === view, "step");
   });
+  /* the method and the lesson only matter while learning: elsewhere the bar shows just the puzzle */
+  for (const b of document.querySelectorAll("#navctx > button"))
+    if (b.navV === "track" || b.navV === "steps") b.hidden = section !== "learn";
   $("#steps").hidden = section !== "learn" || !$("#steps").childElementCount;
   placeTabInd();
   for (const cur of document.querySelectorAll('#steps [aria-current], #navctx [aria-current="step"]'))
@@ -12364,6 +12699,9 @@ const NAMED_VIEWS = {
   four: "four",
   puzzles: "puzzles",
   mycube: "my-cube",
+  namycube: "my-cube-other-puzzles",
+  napractice: "practice-4x4",
+  naprogress: "progress-other-puzzles",
   progress: "progress",
   practice: "practice",
   quiz: "quiz",
@@ -12412,6 +12750,7 @@ function showView(v) {
   if (v === "mycube") openMyCube();
   else if (v === "progress") openProgress();
   else if (v === "puzzles") openPuzzles();
+  else if (NOTES[v]) openNote(v);
   else if (v === "pyrprac") openPyrPractice();
   else if (typeof v === "string" && /^pyr\d$/.test(v)) openPyrStep(+v[3]);
   else if (v === "four") openFour();
@@ -12423,7 +12762,7 @@ function showView(v) {
 /* Which panels are visible in each mode */
 function layout(mode) {
   const any = (...m) => m.includes(mode);
-  const wide = any("progress", "algs", "quiz", "timer", "puzzles", "pyr", "four");
+  const wide = any("progress", "algs", "quiz", "timer", "puzzles", "pyr", "four", "note");
   $("main").classList.toggle("wide", wide);
   $(".stagecol").hidden = wide;
   $("main").classList.toggle("paintmode", mode === "paint");
@@ -12433,6 +12772,7 @@ function layout(mode) {
   $("#solvePanel").hidden = mode !== "solve";
   $("#progressPanel").hidden = mode !== "progress";
   $("#puzzlesPanel").hidden = mode !== "puzzles";
+  $("#notePanel").hidden = mode !== "note";
   $("#pyrPanel").hidden = mode !== "pyr";
   $("#fourPanel").hidden = mode !== "four";
   $("#algsPanel").hidden = mode !== "algs";
@@ -12442,22 +12782,23 @@ function layout(mode) {
   $("#casePanel").hidden = !any("cases", "solve", "watch");
   $("#trainPanel").hidden = mode !== "trainer";
   $("#practicePanel").hidden = mode !== "practice";
-  $("#detail").hidden = any("paint", "progress", "algs", "quiz", "timer", "puzzles", "pyr", "four");
+  $("#detail").hidden = any("paint", "progress", "algs", "quiz", "timer", "puzzles", "pyr", "four", "note");
   $("#caseCtrl").hidden = !any("cases", "solve", "watch");
   $("#trainCtrl").hidden = mode !== "trainer";
   $("#paintCtrl").hidden = mode !== "paint";
   $("#practiceCtrl").hidden = mode !== "practice";
-  $("#tips").hidden = any("quiz", "four");
+  $("#tips").hidden = any("quiz", "four", "note");
 }
 
 /* ================= Nav menus: the method list, and (on a phone) the lesson list =================
    A menu drops down under its button. It closes on a pick, on Escape (focus goes back to the button), and on a click
    outside it; the arrow keys move through its items. */
+const MENU_BTN = '#navctx [aria-expanded="true"], #hctx [aria-expanded="true"]';
 function closeNavMenu(refocus) {
   const m = document.querySelector(".navmenu");
   if (!m) return;
   m.remove();
-  const b = document.querySelector('#navctx [aria-expanded="true"]');
+  const b = document.querySelector(MENU_BTN);
   if (b) {
     b.setAttribute("aria-expanded", "false");
     if (refocus) b.focus();
@@ -12470,22 +12811,23 @@ function openNavMenu(btn, cls, items, pick) {
   if (same) return;
   const menu = document.createElement("div");
   menu.className = "navmenu " + cls;
-  menu.id = cls === "stepmenu" ? "stepMenu" : "methodMenu";
+  menu.id = { stepmenu: "stepMenu", methodmenu: "methodMenu", ctxmenu: "ctxMenu" }[cls];
   menu.innerHTML = items
-    .map(
-      (it) =>
-        '<button class="sp' +
-        (it.cur ? " cur" : "") +
-        '" data-v="' +
-        it.v +
-        '"' +
-        (it.cur ? ' aria-current="' + it.curKind + '"' : "") +
-        ">" +
-        it.html +
-        "</button>",
+    .map((it) =>
+      it.head
+        ? '<div class="mhead">' + it.head + "</div>"
+        : '<button class="sp' +
+          (it.cur ? " cur" : "") +
+          '" data-v="' +
+          it.v +
+          '"' +
+          (it.cur ? ' aria-current="' + it.curKind + '"' : "") +
+          ">" +
+          it.html +
+          "</button>",
     )
     .join("");
-  const bar = $("#navbar");
+  const bar = btn.closest("header") || $("#navbar");
   bar.appendChild(menu);
   const br = btn.getBoundingClientRect(),
     nr = bar.getBoundingClientRect();
@@ -12513,26 +12855,76 @@ function toggleStepMenu(btn) {
     },
   );
 }
-function toggleMethodMenu(btn) {
+const methodItems = (prefix) => {
   const now = methodNow();
+  return methodList().map((m) => ({
+    v: prefix + m.id,
+    cur: m.id === now,
+    curKind: "true",
+    html:
+      '<span class="mtxt"><b>' +
+      m.name +
+      "</b><small>" +
+      m.sub +
+      " · " +
+      TRACKS[m.track].length +
+      " lessons</small></span>" +
+      (m.id === now ? ICON.check.replace("<svg", '<svg class="ck"') : ""),
+  }));
+};
+function toggleMethodMenu(btn) {
+  openNavMenu(btn, "methodmenu", methodItems(""), switchTrack);
+}
+/* The phone's one line, "3×3 · Beginner · Step 2 of 7": in Learn it opens one menu with the puzzle, the method and the
+   lessons; elsewhere it shows just the puzzle and goes to the puzzle list. */
+const ctxMenuOn = () => sectionOf(view) === "learn" && lessonEntries().length > 0;
+function ctxChipLabel() {
+  const name = puzzleName(),
+    art = { pyr: PUZZLE_ART.pyraminx, four: PUZZLE_ART.cube4, 222: PUZZLE_ART.cube2 }[store.puzzle] || PUZZLE_ART.cube3;
+  let text = name;
+  if (ctxMenuOn()) {
+    if (store.puzzle === "333" || store.puzzle === "222")
+      text += " · " + (methodList().find((m) => m.id === methodNow()) || methodList()[0]).short;
+    text += " · " + stepsText(lessonEntries(), currentLesson());
+  }
+  return {
+    cls: "sp ctxchip stepschip",
+    html:
+      '<span class="pzmini" aria-hidden="true">' +
+      art +
+      '</span><span class="ctxt">' +
+      text +
+      "</span>" +
+      CHEVRON +
+      '<span class="sr">' +
+      (ctxMenuOn() ? ". Change puzzle, method or lesson" : ". Pick a puzzle") +
+      "</span>",
+  };
+}
+function toggleCtxMenu(btn) {
+  const cur = currentLesson(),
+    methods = store.puzzle === "333" || store.puzzle === "222";
   openNavMenu(
     btn,
-    "methodmenu",
-    methodList().map((m) => ({
-      v: m.id,
-      cur: m.id === now,
-      curKind: "true",
-      html:
-        '<span class="mtxt"><b>' +
-        m.name +
-        "</b><small>" +
-        m.sub +
-        " · " +
-        TRACKS[m.track].length +
-        " lessons</small></span>" +
-        (m.id === now ? ICON.check.replace("<svg", '<svg class="ck"') : ""),
-    })),
-    switchTrack,
+    "ctxmenu",
+    [
+      { head: "Puzzle" },
+      {
+        v: "puzzles",
+        html:
+          navLabel("puzzles").html.replace(/<span class="sr">[^<]*<\/span>/, "") + '<span class="mgo">Change</span>',
+      },
+      ...(methods ? [{ head: "Method" }, ...methodItems("m:")] : []),
+      { head: "Lessons" },
+      ...lessonEntries().map((v) => ({ v: "l:" + v, cur: v === cur, curKind: "step", html: navLabel(v).html })),
+    ],
+    (v) => {
+      if (v === "puzzles") return goView("puzzles");
+      if (v.startsWith("m:")) return switchTrack(v.slice(2));
+      const l = v.slice(2);
+      goView(/^\d+$/.test(l) ? +l : l);
+      topScroll();
+    },
   );
 }
 document.addEventListener("keydown", (e) => {
@@ -12549,7 +12941,7 @@ document.addEventListener("keydown", (e) => {
 });
 document.addEventListener("click", (e) => {
   const m = document.querySelector(".navmenu");
-  if (m && !m.contains(e.target) && !e.target.closest('#navctx [aria-expanded="true"]')) closeNavMenu();
+  if (m && !m.contains(e.target) && !e.target.closest(MENU_BTN)) closeNavMenu();
 });
 if (window.matchMedia)
   for (const q of [MQ.phone, MQ.side]) {
@@ -12580,6 +12972,58 @@ function stepsText(ls, cur) {
     n = basicsFirst ? ls.length - 1 : ls.length;
   if (basicsFirst && i === 0) return "Basics";
   return "Step " + (basicsFirst ? i : i + 1) + " of " + n;
+}
+
+/* ================= Tabs with nothing for this puzzle yet =================
+   Rather than a tab bar that changes with the puzzle, the tab stays and says what it does and where to go instead. */
+const puzzleName = () => ({ pyr: "Pyraminx", four: "4×4", 222: "2×2" })[store.puzzle] || "3×3";
+const NOTES = {
+  namycube: {
+    tile: () => MYTILE,
+    title: "My cube is for the 3×3",
+    text: () =>
+      "Paint in your scrambled 3×3, or scan it with the camera, and My cube shows you every move to solve it. It doesn’t work with the " +
+      puzzleName() +
+      " yet.",
+    go: "Switch to the 3×3",
+    act: () => {
+      setPuzzle("333");
+      goView("mycube");
+    },
+  },
+  napractice: {
+    tile: () => PRACTICETILE,
+    title: "Practice on the 4×4",
+    text: () =>
+      "The 4×4 has one algorithm to practice so far: the parity fix. You’ll find it on the 4×4 screen, under the cube.",
+    go: "Practice the parity fix",
+    act: () => {
+      goView("four");
+      setTimeout(() => $("#f4PracStart") && $("#f4PracStart").scrollIntoView({ block: "center" }), 60);
+    },
+  },
+  naprogress: {
+    tile: () => PROGTILE,
+    title: "Progress is for the cubes",
+    text: () =>
+      "Progress counts the 3×3 and 2×2 lessons and algorithms. For the " +
+      puzzleName() +
+      ", a tick beside a lesson in Learn shows it’s learned.",
+    go: "See 3×3 and 2×2 progress",
+    act: () => goView("progress"),
+  },
+};
+function openNote(v) {
+  const n = NOTES[v];
+  enterWideView(v, n.tile(), n.title);
+  layout("note");
+  $("#notePanel").innerHTML =
+    '<div class="pcard lead"><div>' +
+    esc(n.text()) +
+    '</div><button class="ib main" id="noteGo">' +
+    esc(n.go) +
+    "</button></div>";
+  $("#noteGo").addEventListener("click", n.act);
 }
 
 /* ================= Lesson steps ================= */
@@ -12635,12 +13079,7 @@ function renderTips(tips, tipc, lesson) {
       prev = STEPS[prevI],
       next = STEPS[nextI],
       done = !!store.done[st.id];
-    h +=
-      '<button class="learn" id="learnBtn" aria-pressed="' +
-      done +
-      '">' +
-      (done ? ICON.check + "<span>Learned. Tap to undo.</span>" : "<span>Mark this step as learned</span>") +
-      "</button>";
+    h += '<button class="learn" id="learnBtn" aria-pressed="' + done + '">' + learnBtnHTML(done) + "</button>";
     h +=
       '<div class="nav2">' +
       (prev
@@ -12672,12 +13111,24 @@ function renderTips(tips, tipc, lesson) {
   if ($("#nextBtn")) $("#nextBtn").addEventListener("click", () => checkBeforeNext(i, order[at + 1]));
 }
 
+/* Watching every case marks a step learned; the button undoes that, or marks a step you know without watching it all. */
+const learnBtnHTML = (done) =>
+  done ? ICON.check + "<span>Learned. Tap to undo.</span>" : "<span>Mark this step as learned</span>";
+function syncLearnBtn() {
+  const b = $("#learnBtn");
+  if (!b || typeof view !== "number") return;
+  const done = !!store.done[STEPS[view].id];
+  b.setAttribute("aria-pressed", String(done));
+  b.innerHTML = learnBtnHTML(done);
+}
+
 /* caption */
 function setCap(m, mode) {
   const d = DESC[m] || [m, ""],
     whole = isRotation(m),
     cap = $("#cap");
   cap.classList.toggle("whole", whole);
+  cap.classList.remove("keep");
   $("#capBig").textContent = pretty(m);
   $("#capTag").innerHTML = whole ? '<span class="tag">Whole cube</span>' : "";
   $("#capD").textContent = (mode === "undo" ? "Undo: " : "") + d[0];
@@ -12685,7 +13136,7 @@ function setCap(m, mode) {
   $("#live").textContent = (mode === "next" ? "Next move " : "") + spokenMove(m) + ". " + d[0] + ".";
 }
 function setCapText(big, d, t) {
-  $("#cap").classList.remove("whole");
+  $("#cap").classList.remove("whole", "keep");
   $("#capBig").innerHTML = big;
   $("#capTag").innerHTML = "";
   $("#capD").textContent = d;
@@ -12879,6 +13330,8 @@ function markChips(active) {
 function updPlay() {
   const b = $("#plBtn"),
     end = P.idx >= P.ticks.length;
+  /* between moves the caption keeps to one line on a phone, giving the cube the room */
+  $("#cap").classList.toggle("still", !P.playing);
   b.innerHTML = P.playing
     ? ICON.pause + "<span>Pause</span>"
     : end
@@ -12896,11 +13349,8 @@ function finishPlan() {
     paint3D();
   }
   const ref = P.plan.caseRef;
-  if (ref) markWatched(ref.si, ref.ci);
   const nudge =
-    ref && typeof view === "number" && allWatched(ref.si) && !store.done[STEPS[ref.si].id]
-      ? "You’ve watched every case in this step. Mark it as learned below when you’re ready."
-      : null;
+    ref && markWatched(ref.si, ref.ci) ? "That’s every case in this step, so it’s marked as learned." : null;
   setCapText(
     "✓",
     P.plan.done,
@@ -12910,6 +13360,7 @@ function finishPlan() {
         ? "Nicely done."
         : nudge || "Pick another case, or tap “Watch again”.",
   );
+  if (nudge) $("#cap").classList.add("keep"); /* this second line matters: it stays even between moves */
   if (P.plan.onDone) P.plan.onDone();
 }
 function stepFwd(cb) {
@@ -14332,8 +14783,10 @@ async function exportSolves() {
   const r = await offerFile("cubetutor-times-" + today() + ".csv", text, "text/csv");
   dataNote(r, text, "times");
 }
+/* where a data message goes: the settings panel while it's open (or when no screen has its own note), else the screen's */
+const noteBox = () => (!$("#setMenu").hidden || !$("#dataNote") ? $("#setNote") : $("#dataNote"));
 function dataNote(result, text, what) {
-  const box = $("#dataNote");
+  const box = noteBox();
   if (!box) return;
   box.hidden = false;
   if (result === "saved")
@@ -14354,7 +14807,7 @@ function dataNote(result, text, what) {
 let restoreArm = 0,
   pendingRestore = null;
 function restoreFromText(text) {
-  const box = $("#dataNote");
+  const box = noteBox();
   box.hidden = false;
   try {
     pendingRestore = readBackup(text, storeSchema());
@@ -14395,8 +14848,9 @@ function refreshAfterRestore(msg) {
   updateMethodButtons();
   buildNav();
   showView(view);
+  renderSettings();
   $("#live").textContent = msg;
-  const note = $("#dataNote");
+  const note = noteBox();
   if (note) {
     note.hidden = false;
     note.innerHTML = "<p>" + esc(msg) + "</p>";
@@ -14404,8 +14858,8 @@ function refreshAfterRestore(msg) {
 }
 
 /* ================= First-run welcome =================
-   Three short screens: what the app does, how to hold the cube, where to start. Shown once to someone new;
-   "Show the welcome again" on the Progress screen brings it back. */
+   Two short screens: how to hold the cube, then where to start (the landing page has already said what the app does). Shown once to someone new;
+   "Show the welcome again" in the settings brings it back. */
 const WELCOME = { step: 0, lastFocus: null };
 const isNewHere = () =>
   !store.onboarded && !store.days.length && !Object.keys(store.done).length && !store.solves.length;
@@ -14435,15 +14889,8 @@ function welcomeKey(e) {
 }
 function renderWelcome() {
   const s = WELCOME.step;
-  $("#wDots").innerHTML = [0, 1, 2].map((i) => '<i class="' + (i <= s ? "on" : "") + '"></i>').join("");
+  $("#wDots").innerHTML = [0, 1].map((i) => '<i class="' + (i <= s ? "on" : "") + '"></i>').join("");
   const pages = [
-    {
-      pic: '<div class="wmark" aria-hidden="true">' + $(".mark").outerHTML + "</div>",
-      title: "Welcome to Cube Tutor",
-      body:
-        "<p>Learn to solve a Rubik’s Cube one step at a time. A 3D cube shows the angle to hold yours at, and an arrow shows which way to turn before every move.</p>" +
-        "<p>Already solving? Learn the speed method, drill cases and time yourself.</p>",
-    },
     {
       pic: isoSVG(newCube(), paintMask(MASK.all), new Set()),
       title: "Hold it like this",
@@ -14465,12 +14912,12 @@ function renderWelcome() {
   $("#wPic").hidden = !pages.pic;
   $("#wTitle").textContent = pages.title;
   $("#wBody").innerHTML = pages.body;
-  $("#wNext").hidden = s === 2;
+  $("#wNext").hidden = s === 1;
   $("#wBack").hidden = s === 0;
   $("#wBody")
     .querySelectorAll("[data-w]")
     .forEach((b) => b.addEventListener("click", () => chooseStart(b.dataset.w)));
-  (s === 2 ? $("#wBody button") : $("#wNext")).focus();
+  (s === 1 ? $("#wBody button") : $("#wNext")).focus();
 }
 function chooseStart(choice) {
   closeWelcome();
@@ -14482,7 +14929,7 @@ function chooseStart(choice) {
 }
 function initWelcome() {
   $("#wNext").addEventListener("click", () => {
-    WELCOME.step = Math.min(2, WELCOME.step + 1);
+    WELCOME.step = Math.min(1, WELCOME.step + 1);
     renderWelcome();
   });
   $("#wBack").addEventListener("click", () => {
@@ -14501,14 +14948,12 @@ const SOON_PUZZLES = {
       id: "skewb",
       puz: "skewb",
       name: "Skewb",
-      tag: "Corner-Twisting Enigma",
       about: "A cube that turns around its corners. Only a few moves to learn.",
     },
     {
       id: "megaminx",
       puz: "minx",
       name: "Megaminx",
-      tag: "Dodecahedral Marathon",
       about: "Twelve faces and twelve colors. Solved a lot like a 3×3, just longer.",
     },
   ],
@@ -14517,14 +14962,12 @@ const SOON_PUZZLES = {
       id: "axis",
       puz: "axis",
       name: "Axis Cube",
-      tag: "Axis-Defying Chaos",
       about: "A 3×3 that changes shape as you turn it. Same moves, new challenge.",
     },
     {
       id: "ghost",
       puz: "ghost",
       name: "Ghost Cube",
-      tag: "Mind-Bending Asymmetry",
       about: "A one-color 3×3 shape mod that you solve by shape alone.",
     },
   ],
@@ -14537,7 +14980,8 @@ function setPuzzle(p) {
   useTimerPuzzle(p === "pyr" ? "pyram" : p === "four" ? "444" : p);
   save();
   buildNav();
-  $("#live").textContent = p === "pyr" ? "Pyraminx." : p === "four" ? "4×4 cube." : p === "222" ? "2×2 cube." : "3×3 cube.";
+  $("#live").textContent =
+    p === "pyr" ? "Pyraminx." : p === "four" ? "4×4 cube." : p === "222" ? "2×2 cube." : "3×3 cube.";
 }
 const lastStepFor = (track) =>
   TRACKS[track].includes(store.lastStep) ? store.lastStep : TRACKS[track][track === "two" ? 0 : 0];
@@ -14553,9 +14997,7 @@ const soonCard = (p) =>
   p.id +
   '">' +
   esc(p.name) +
-  '</h3><span class="pztag">' +
-  esc(p.tag) +
-  "</span>" +
+  "</h3>" +
   "<p>" +
   esc(p.about) +
   '</p><div class="pzbadges">' +
@@ -14564,7 +15006,8 @@ const soonCard = (p) =>
   "</div>" +
   '<button class="pill" data-timer="' +
   p.puz +
-  '">Time a ' +
+  '">Time ' +
+  (/^[AEIOU]/.test(p.name) ? "an " : "a ") +
   esc(p.name) +
   " solve</button></div></article>";
 const nowCard = (id, art, name, about, btn, current) =>
@@ -14642,7 +15085,7 @@ function openPuzzles() {
       "pyraminx",
       PUZZLE_ART.pyraminx,
       "Pyraminx",
-      "Tetrahedral Speedster. Four short lessons from tips to the last edges, a timer with competition-style scrambles, and a shortest-solution player.",
+      "Four short lessons from tips to the last edges, a timer with competition-style scrambles, and a shortest-solution player.",
       { id: "pzPyr", label: pyr ? "Continue with the Pyraminx" : "Start the Pyraminx" },
       pyr,
     ) +
@@ -14673,6 +15116,15 @@ function openPuzzles() {
         goView("timer");
       }),
     );
+  renderTips(
+    [
+      "Switching puzzles keeps everything you’ve learned; come back any time and pick up where you were.",
+      "Each puzzle has its own timer session, so your 2×2 times never mix with your 3×3 ones.",
+      "The timer works for every puzzle here, even the ones whose lessons are still coming.",
+    ],
+    "#ffd500",
+    false,
+  );
 }
 
 /* ================= Pyraminx: 3D view, move player, lessons =================
@@ -15848,6 +16300,26 @@ function setTheme(theme) {
 }
 document.querySelectorAll(".themeOpt").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.t)));
 setTheme(localStorage.getItem("cubetutor:theme") || "system");
+/* The gear opens the settings panel: things you set once (the theme, keyboard keys, your data) rather than on every screen. */
+function showSettings(on) {
+  $("#setMenu").hidden = !on;
+  $("#setBtn").setAttribute("aria-expanded", String(on));
+}
+$("#setBtn").addEventListener("click", () => {
+  const on = $("#setMenu").hidden;
+  showSettings(on);
+  if (on) $("#setMenu").querySelector("button").focus();
+});
+document.addEventListener("click", (e) => {
+  if (!$("#setMenu").hidden && !$("#setMenu").contains(e.target) && !$("#setBtn").contains(e.target))
+    showSettings(false);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("#setMenu").hidden) {
+    showSettings(false);
+    $("#setBtn").focus();
+  }
+});
 
 /* ================= Settings: letters and color layout ================= */
 function rerenderView() {
@@ -15927,7 +16399,7 @@ document.addEventListener("keydown", (e) => {
   const charKey = e.key.length === 1 && e.key !== " ";
   if (view === "timer" && pmode === "timer") {
     /* any key stops a running timer, as on a real stackmat; that's not a shortcut, so it stays on */
-    if (TM.state === "running" || (!charKey || store.keys !== false) && (!onButton || (a && a.id === "tpad")))
+    if (TM.state === "running" || ((!charKey || store.keys !== false) && (!onButton || (a && a.id === "tpad"))))
       timerKey(e, true);
     return;
   }
@@ -16016,6 +16488,7 @@ document.addEventListener("keydown", (e) => {
 /* ================= Boot ================= */
 
 buildNav();
+renderSettings();
 let resizeT;
 window.addEventListener("resize", () => {
   clearTimeout(resizeT);

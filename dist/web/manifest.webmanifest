@@ -1,6 +1,6 @@
 {
-  "name": "Cube coach",
-  "short_name": "Cube coach",
+  "name": "Cube Tutor",
+  "short_name": "Cube Tutor",
   "description": "Learn to solve a Rubik's Cube: 3D lessons with turn arrows, and exact moves for your own cube.",
   "start_url": "./",
   "scope": "./",

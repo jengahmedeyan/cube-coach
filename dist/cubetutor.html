@@ -53,6 +53,28 @@
 }
 html {
   scroll-padding-top: env(safe-area-inset-top, 0px);
+  /* no double-tap zoom: taps on buttons stay taps */
+  touch-action: manipulation;
+}
+/* On a phone the app doesn't zoom at all, like an installed app: scrolling only. (iOS's own pinch events are cancelled
+   in app.js; iOS ignores user-scalable=no.) Bigger text comes from the phone's own text-size setting. */
+@media (max-width: 639.98px), (max-width: 899.98px) and (orientation: portrait), (max-width: 899.98px) and (min-height: 521px) {
+  html {
+    touch-action: pan-x pan-y;
+  }
+}
+@media (orientation: landscape) and (min-width: 640px) and (max-height: 520.98px) {
+  html {
+    touch-action: pan-x pan-y;
+  }
+}
+/* iOS zooms the page into any field with text under 16px when it's tapped; at 16px it doesn't */
+@media (max-width: 639.98px), (max-width: 899.98px) and (orientation: portrait), (max-width: 899.98px) and (min-height: 521px) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em) !important;
+  }
 }
 *,
 *::before,
@@ -360,7 +382,6 @@ body {
     grid-area: bar;
   }
 }
-
 /* ================= Navigation =================
    The context row (puzzle, method, and on a phone the Step chip), the section tabs, and the lesson stepper. */
 :root {
@@ -838,6 +859,38 @@ body {
 }
 .setmenu .paste {
   margin: 0;
+}
+
+/* ---------- the page behind an open menu ---------- */
+.navscrim {
+  display: none;
+}
+@media (max-width: 639.98px), (max-width: 899.98px) and (orientation: portrait), (max-width: 899.98px) and (min-height: 521px) {
+  .navscrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 35; /* over the tab bar, under the menu */
+    background: rgba(0, 0, 0, 0.42);
+    animation: scrimIn 0.16s ease-out;
+  }
+  html.menuopen,
+  html.menuopen body {
+    overflow: hidden;
+  }
+  .navmenu {
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  }
+}
+@keyframes scrimIn {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .navscrim {
+    animation: none;
+  }
 }
 .viewer {
   position: relative;
@@ -2657,8 +2710,12 @@ ul.algs {
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: none;
+  touch-action: pan-y; /* a swipe that starts here still scrolls the page (and cancels the press) */
   padding: 20px;
+}
+/* once the clock runs, the pad fills the screen and any touch stops it */
+body.timing .tpad {
+  touch-action: none;
 }
 .tdisplay {
   font-size: clamp(56px, 16vw, 112px);
@@ -11571,16 +11628,37 @@ function historyHTML() {
     '<div class="perr info" id="dataNote" hidden></div>'
   );
 }
+/* how far (px) a finger may drift during a press before it counts as a scroll */
+const PRESS_SLOP = 10;
 function bindTimer() {
   const pad = $("#tpad");
+  /* A finger that moves is scrolling the page, not timing: the idle pad lets the page scroll (touch-action: pan-y),
+     and a press that travels more than a few pixels, or that the browser takes over for a scroll, never starts the
+     clock. With inspection on, inspection starts on a still tap, not the moment a finger lands. */
+  let press = null;
+  const moved = (e) => press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > PRESS_SLOP;
+  const dropPress = () => {
+    press = null;
+    if (TM.state === "holding" || TM.state === "ready") cancelHold();
+  };
   pad.addEventListener("pointerdown", (e) => {
     e.preventDefault();
-    timerDown();
+    press = { x: e.clientX, y: e.clientY, inspect: TM.state === "idle" && store.timer.inspect };
+    if (press.inspect) wakeActive();
+    else timerDown();
   });
-  pad.addEventListener("pointerup", timerUp);
-  pad.addEventListener("pointercancel", () => {
-    if (TM.state === "holding" || TM.state === "ready") cancelHold();
+  pad.addEventListener("pointermove", (e) => {
+    if (moved(e)) dropPress();
   });
+  pad.addEventListener("pointerup", (e) => {
+    if (!press) return; /* already dropped: it moved, or the browser took it for a scroll */
+    if (moved(e)) return dropPress();
+    const p = press;
+    press = null;
+    if (p.inspect) timerDown();
+    else timerUp();
+  });
+  pad.addEventListener("pointercancel", dropPress);
   /* sessions: switch, add, rename, delete (with its solves; the first tap only arms it) */
   $("#sessSel").addEventListener("change", (e) => {
     store.timer.current = e.target.value;
@@ -12473,8 +12551,10 @@ function fillNav(box, items, onClick) {
     box.appendChild(b);
   });
 }
+/* set while a pick inside the open menu rebuilds the bar, so the menu stays open (see toggleCtxMenu) */
+let keepMenu = false;
 function buildNav() {
-  closeNavMenu();
+  if (!keepMenu) closeNavMenu();
   /* on a phone the puzzle, method and lesson share one line in the header; elsewhere they're chips beside the tabs */
   fillNav($("#hctx"), mobile() ? ["ctx"] : [], (v, b) => (ctxMenuOn() ? toggleCtxMenu(b) : goView("puzzles")));
   fillNav($("#navctx"), mobile() ? [] : ctxItems(), (v, b) =>
@@ -12669,6 +12749,7 @@ function updateNav() {
     if (b.navV === "track" || b.navV === "steps") b.hidden = section !== "learn";
   $("#steps").hidden = section !== "learn" || !$("#steps").childElementCount;
   placeTabInd();
+  refreshCtxMenu();
   for (const cur of document.querySelectorAll('#steps [aria-current], #navctx [aria-current="step"]'))
     if (cur.scrollIntoView)
       cur.scrollIntoView({ block: "nearest", inline: "center", behavior: reduced() ? "auto" : "smooth" });
@@ -12795,6 +12876,9 @@ function closeNavMenu(refocus) {
   const m = document.querySelector(".navmenu");
   if (!m) return;
   m.remove();
+  const scrim = document.querySelector(".navscrim");
+  if (scrim) scrim.remove();
+  document.documentElement.classList.remove("menuopen");
   const b = document.querySelector(MENU_BTN);
   if (b) {
     b.setAttribute("aria-expanded", "false");
@@ -12809,6 +12893,22 @@ function openNavMenu(btn, cls, items, pick) {
   const menu = document.createElement("div");
   menu.className = "navmenu " + cls;
   menu.id = { stepmenu: "stepMenu", methodmenu: "methodMenu", ctxmenu: "ctxMenu" }[cls];
+  fillMenu(menu, items, pick);
+  /* on a phone the page dims behind the menu, so the menu reads as a layer of its own */
+  document.body.insertAdjacentHTML("beforeend", '<div class="navscrim" aria-hidden="true"></div>');
+  document.documentElement.classList.add("menuopen");
+  const bar = btn.closest("header") || $("#navbar");
+  bar.appendChild(menu);
+  const br = btn.getBoundingClientRect(),
+    nr = bar.getBoundingClientRect();
+  menu.style.setProperty("--mx", Math.max(0, Math.min(br.left - nr.left, nr.width - menu.offsetWidth)) + "px");
+  menu.style.setProperty("--my", br.bottom - nr.top + 6 + "px");
+  btn.setAttribute("aria-expanded", "true");
+  btn.setAttribute("aria-controls", menu.id);
+  (menu.querySelector(".cur") || menu.querySelector("button")).focus();
+}
+/* items: {head} for a section title, or {v, html, cur, curKind, stay}. A "stay" item keeps the menu open when picked. */
+function fillMenu(menu, items, pick) {
   menu.innerHTML = items
     .map((it) =>
       it.head
@@ -12818,27 +12918,19 @@ function openNavMenu(btn, cls, items, pick) {
           '" data-v="' +
           it.v +
           '"' +
+          (it.stay ? " data-stay" : "") +
           (it.cur ? ' aria-current="' + it.curKind + '"' : "") +
           ">" +
           it.html +
           "</button>",
     )
     .join("");
-  const bar = btn.closest("header") || $("#navbar");
-  bar.appendChild(menu);
-  const br = btn.getBoundingClientRect(),
-    nr = bar.getBoundingClientRect();
-  menu.style.setProperty("--mx", Math.max(0, Math.min(br.left - nr.left, nr.width - menu.offsetWidth)) + "px");
-  menu.style.setProperty("--my", br.bottom - nr.top + 6 + "px");
-  btn.setAttribute("aria-expanded", "true");
-  btn.setAttribute("aria-controls", menu.id);
   menu.querySelectorAll("[data-v]").forEach((b) =>
     b.addEventListener("click", () => {
-      closeNavMenu();
+      if (!b.hasAttribute("data-stay")) closeNavMenu();
       pick(b.dataset.v);
     }),
   );
-  (menu.querySelector(".cur") || menu.querySelector("button")).focus();
 }
 function toggleStepMenu(btn) {
   const cur = currentLesson();
@@ -12898,31 +12990,50 @@ function ctxChipLabel() {
       "</span>",
   };
 }
-function toggleCtxMenu(btn) {
+/* The phone's menu: puzzle, method, lessons. Picking a method keeps it open and swaps in that method's lessons, since
+   the next thing you'll want is a lesson. */
+function ctxMenuItems() {
   const cur = currentLesson(),
     methods = store.puzzle === "333" || store.puzzle === "222";
-  openNavMenu(
-    btn,
-    "ctxmenu",
-    [
-      { head: "Puzzle" },
-      {
-        v: "puzzles",
-        html:
-          navLabel("puzzles").html.replace(/<span class="sr">[^<]*<\/span>/, "") + '<span class="mgo">Change</span>',
-      },
-      ...(methods ? [{ head: "Method" }, ...methodItems("m:")] : []),
-      { head: "Lessons" },
-      ...lessonEntries().map((v) => ({ v: "l:" + v, cur: v === cur, curKind: "step", html: navLabel(v).html })),
-    ],
-    (v) => {
-      if (v === "puzzles") return goView("puzzles");
-      if (v.startsWith("m:")) return switchTrack(v.slice(2));
-      const l = v.slice(2);
-      goView(/^\d+$/.test(l) ? +l : l);
-      topScroll();
+  return [
+    { head: "Puzzle" },
+    {
+      v: "puzzles",
+      html: navLabel("puzzles").html.replace(/<span class="sr">[^<]*<\/span>/, "") + '<span class="mgo">Change</span>',
     },
-  );
+    ...(methods ? [{ head: "Method" }, ...methodItems("m:").map((m) => Object.assign(m, { stay: true }))] : []),
+    { head: "Lessons" },
+    ...lessonEntries().map((v) => ({ v: "l:" + v, cur: v === cur, curKind: "step", html: navLabel(v).html })),
+  ];
+}
+function ctxPick(v) {
+  if (v === "puzzles") return goView("puzzles");
+  if (v.startsWith("m:")) {
+    keepMenu = true;
+    switchTrack(v.slice(2));
+    keepMenu = false;
+    return refreshCtxMenu();
+  }
+  const l = v.slice(2);
+  goView(/^\d+$/.test(l) ? +l : l);
+  topScroll();
+}
+function toggleCtxMenu(btn) {
+  openNavMenu(btn, "ctxmenu", ctxMenuItems(), ctxPick);
+}
+/* rebuild the open menu in place (after a method switch, and when the lesson changes under it), keeping focus where it was */
+function refreshCtxMenu() {
+  const menu = $("#ctxMenu");
+  if (!menu) return;
+  const had = menu.contains(document.activeElement) && document.activeElement.dataset.v;
+  fillMenu(menu, ctxMenuItems(), ctxPick);
+  const btn = $("#hctx .ctxchip");
+  if (btn) {
+    btn.setAttribute("aria-expanded", "true");
+    btn.setAttribute("aria-controls", "ctxMenu");
+  }
+  const back = had && menu.querySelector('[data-v="' + had + '"]');
+  if (back) back.focus();
 }
 document.addEventListener("keydown", (e) => {
   const m = document.querySelector(".navmenu");
@@ -12938,6 +13049,8 @@ document.addEventListener("keydown", (e) => {
 });
 document.addEventListener("click", (e) => {
   const m = document.querySelector(".navmenu");
+  /* a pick that rebuilt the menu leaves the clicked button detached: that's not a click outside */
+  if (!document.contains(e.target)) return;
   if (m && !m.contains(e.target) && !e.target.closest(MENU_BTN)) closeNavMenu();
 });
 if (window.matchMedia)
@@ -16297,6 +16410,12 @@ function setTheme(theme) {
 }
 document.querySelectorAll(".themeOpt").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.t)));
 setTheme(localStorage.getItem("cubetutor:theme") || "system");
+/* No pinch zoom on a phone (see html's touch-action in base.css): iOS Safari pinches through its own gesture events. */
+for (const t of ["gesturestart", "gesturechange"])
+  document.addEventListener(t, (e) => (mobile() || window.matchMedia(MQ.side).matches) && e.preventDefault(), {
+    passive: false,
+  });
+
 /* The gear opens the settings panel: things you set once (the theme, keyboard keys, your data) rather than on every screen. */
 function showSettings(on) {
   $("#setMenu").hidden = !on;
